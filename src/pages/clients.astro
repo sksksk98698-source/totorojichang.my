@@ -1,0 +1,1072 @@
+---
+import Layout from '../components/Layout.astro';
+import { withBase, toAbsoluteUrl } from '../data/site';
+import { airports } from '../data/airports';
+
+const featuredAirport = airports.find((a) => a.isFeatured) || airports[0];
+const feimaoAirport = airports.find((a) => a.id === 'feimao') || airports[1];
+
+const canonicalUrl = toAbsoluteUrl('/clients/');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'TechArticle',
+      '@id': `${canonicalUrl}#article`,
+      headline: '2026 全平台第三方代理客户端官方下载与深度配置专著级指南',
+      description:
+        '汇集 Windows、macOS、iOS、Android、Linux 及 OpenWrt 软路由全平台正版开源客户端下载地址、架构选型、Mihomo/Xray 内核对比、TUN 模式实操与全场景节点超时排障手册。',
+      inLanguage: 'zh-CN',
+      url: canonicalUrl,
+      author: {
+        '@type': 'Organization',
+        name: '龙猫机场实测实验室',
+        url: toAbsoluteUrl('/'),
+      },
+      datePublished: '2026-08-15T08:00:00+08:00',
+      dateModified: '2026-11-07T18:00:00+08:00',
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${canonicalUrl}#faq`,
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: '为什么导入订阅后所有节点测速均显示超时或 1000ms？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '绝大部分是由于设备本地系统时间不准确导致。TLS 1.3 握手要求客户端与服务器时间误差严格在几秒以内，相差过大会被服务器直接拒绝连接。进入系统设置开启“自动同步时间”即可立即解决；其次排查杀毒软件阻止或本地端口冲突。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '系统代理模式 (System Proxy) 与 TUN 模式有什么区别？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '系统代理模式仅修改系统 HTTP/SOCKS 注册表，只能接管主动遵循系统代理的浏览器及常见应用，无法接管终端、外服游戏、Steam 或特定局域网流量；TUN 模式则是创建虚拟网卡接管操作系统底层所有 TCP/UDP 流量，实现真正的全局透明代理。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '在 Windows 上使用 Clash Verge Rev 提示缺少驱动或 TUN 启动失败怎么办？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'TUN 模式需要管理员权限安装虚拟网卡服务（Service Mode）。右键点击客户端图标选择“以管理员身份运行”，在设置页面找到“服务模式 (Service Mode)”并点击安装，状态显示绿色打勾后即可顺利开启 TUN 模式。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '苹果手机 iOS 系统为什么在 App Store 搜不到 Shadowrocket（小火箭）？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '由于合规政策限制，网络代理工具已从国区 App Store 全线下架。用户需要注册或使用海外区域（如美区、日区、港区）的 Apple ID，登录 App Store 搜索购买（美区售价通常为 $2.99），切勿在手机 iCloud 设置登录他人公共账号。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Clash for Windows (CFW) 还能继续使用吗？为什么要换 Clash Verge Rev？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'CFW 原作者已于 2023 年底停止维护并不再更新内核。随着 GFW 演进与 VLESS/Reality 等新型抗封锁协议普及，旧版 CFW 无法支持新协议且存在历史漏洞风险。推荐无缝迁移到活跃维护、基于开源生态的 Clash Verge Rev 或 FlClash。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '访问 ChatGPT 或 Claude 提示“Access Denied”或循环人机验证怎么解决？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '首先检查客户端是否处于“规则分流模式”并固定连接优质原生专线节点（如光速云的专用 AI 节点），不要频繁切换跨大洲节点；其次在客户端清除 DNS 缓存，或在浏览器无痕窗口打开，避免历史 Cookie 记录的旧地区信息冲突。',
+          },
+        },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  title="2026 全平台第三方代理客户端官方下载与深度配置全书"
+  description="汇集 Windows、macOS、iOS、Android、Linux 及软路由全平台正版客户端下载、架构选型（M1/M2/Intel）、Mihomo/Xray 内核解析、TUN 模式实操与全场景故障排查。"
+  canonical={canonicalUrl}
+  jsonLd={jsonLd}
+>
+  <div class="client-guide-wrapper">
+    <!-- 顶部概览与直接结论区 -->
+    <header class="guide-header">
+      <div class="container">
+        <nav aria-label="Breadcrumb" class="guide-breadcrumb">
+          <a href={withBase('/')}>首页</a>
+          <span class="sep">/</span>
+          <span>客户端下载与配置中心</span>
+        </nav>
+
+        <p class="eyebrow">Client Engineering & Deployment Handbook</p>
+        <h1 class="guide-title">第三方代理客户端全平台选型、下载与深度配置专著</h1>
+        <p class="guide-lead">
+          在专线网络与科学上网体系中，<strong>机场节点服务（Server Egress）</strong>与<strong>本地客户端（Client Ingress）</strong>如同网络管道的两端。如果客户端选型不当、内核陈旧或分流规则配置混乱，即便购买了千兆企业级 IEPL 专线，依然会出现网页转圈、游戏高延迟以及 ChatGPT/Claude 被拒的惨淡体验。
+        </p>
+
+        <!-- 开头直接给出答案：各操作系统首选推荐结论 -->
+        <div class="quick-summary-box">
+          <div class="summary-badge">2026 官方推荐核心结论</div>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span class="os-tag">Windows 首选</span>
+              <strong>Clash Verge Rev</strong>
+              <p>Mihomo 内核、中文界面、内置一键 TUN 网卡，替代已停更的 CFW 首选。</p>
+            </div>
+            <div class="summary-item">
+              <span class="os-tag">macOS 首选</span>
+              <strong>Clash Verge Rev (Mac) / Surge</strong>
+              <p>原生支持 Apple Silicon M 系列芯片与 Intel 架构，低内存占用与托盘管理。</p>
+            </div>
+            <div class="summary-item">
+              <span class="os-tag">iOS 手机首选</span>
+              <strong>Shadowrocket (小火箭) / Stash</strong>
+              <p>生态最成熟、规则订阅兼容性最好，需外区 Apple ID 购买买断。</p>
+            </div>
+            <div class="summary-item">
+              <span class="os-tag">Android 首选</span>
+              <strong>v2rayNG / FlClash</strong>
+              <p>开源无广告，支持扫描与剪贴板极速导入，分应用代理极其彻底。</p>
+            </div>
+            <div class="summary-item">
+              <span class="os-tag">软路由首选</span>
+              <strong>OpenClash (OpenWrt)</strong>
+              <p>全屋电视盒子、游戏机、手机无感自动翻墙，支持透明网关与防 DNS 污染。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 目录索引条 (粘性悬浮导航) -->
+        <nav class="toc-bar" aria-label="Table of Contents">
+          <span class="toc-title">目录导航：</span>
+          <div class="toc-links">
+            <a href="#matrix">01. 全平台横向对比</a>
+            <a href="#windows">02. Windows 深度指南</a>
+            <a href="#macos">03. macOS 苹果配置</a>
+            <a href="#ios">04. iOS 小火箭实操</a>
+            <a href="#android">05. Android 避坑实操</a>
+            <a href="#router">06. 软路由/Linux</a>
+            <a href="#principles">07. 内核与分流原理</a>
+            <a href="#troubleshooting">08. 10大疑难排障</a>
+            <a href="#faq">09. 常见问题 FAQ</a>
+            <a href="#airports-bridge">10. 推荐专线直达</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container guide-content">
+      <!-- 第一章：2026 全平台客户端终极横向核心对比表 -->
+      <section id="matrix" class="guide-section">
+        <div class="section-heading">
+          <span class="section-num">SECTION 01</span>
+          <h2>2026 全平台第三方代理客户端核心参数对比表</h2>
+          <p class="muted">
+            数据核实于 2026 年底。所有列举客户端均为开源项目或行业主流商用软件，排除了已停更废弃版本与第三方篡改山寨版本。
+          </p>
+        </div>
+
+        <div class="table-scroll-wrapper">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>客户端名称</th>
+                <th>主导系统</th>
+                <th>核心引擎 (Core)</th>
+                <th>协议支持</th>
+                <th>TUN 模式</th>
+                <th>规则分流</th>
+                <th>内存占用</th>
+                <th>上手难度</th>
+                <th>获取方式</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Clash Verge Rev</strong></td>
+                <td><span class="os-chip">Win / Mac / Linux</span></td>
+                <td>Mihomo (Meta)</td>
+                <td>VLESS / SS / Trojan / Hysteria2</td>
+                <td><span class="status-yes">● 支持 (内置)</span></td>
+                <td>丰富 (内置GeoSite/IP)</td>
+                <td>约 90-140MB</td>
+                <td><span class="diff-easy">新手友好</span></td>
+                <td><a href="https://github.com/clash-verge-rev/clash-verge-rev/releases" target="_blank" rel="noopener">GitHub 官方 ↗</a></td>
+              </tr>
+              <tr>
+                <td><strong>v2rayN</strong></td>
+                <td><span class="os-chip">Windows</span></td>
+                <td>Xray / sing-box</td>
+                <td>全协议 (含 Reality/gRPC)</td>
+                <td><span class="status-yes">● 支持</span></td>
+                <td>自定义路由规则</td>
+                <td>约 70-120MB</td>
+                <td><span class="diff-med">中等</span></td>
+                <td><a href="https://github.com/2dust/v2rayN/releases" target="_blank" rel="noopener">GitHub 官方 ↗</a></td>
+              </tr>
+              <tr>
+                <td><strong>FlClash</strong></td>
+                <td><span class="os-chip">全平台通用</span></td>
+                <td>Mihomo</td>
+                <td>主流现代协议</td>
+                <td><span class="status-yes">● 支持</span></td>
+                <td>Clash 策略组</td>
+                <td>约 50-80MB</td>
+                <td><span class="diff-easy">新手友好</span></td>
+                <td><a href="https://github.com/chen08209/FlClash/releases" target="_blank" rel="noopener">GitHub 官方 ↗</a></td>
+              </tr>
+              <tr>
+                <td><strong>Shadowrocket</strong></td>
+                <td><span class="os-chip">iOS / iPadOS</span></td>
+                <td>自研全能引擎</td>
+                <td>全协议 / 混合订阅</td>
+                <td><span class="status-yes">● 系统 VPN 接口</span></td>
+                <td>极强 (Conf/Rule)</td>
+                <td>轻量 (&lt;40MB)</td>
+                <td><span class="diff-easy">极易上手</span></td>
+                <td><a href="https://apps.apple.com/app/shadowrocket/id932747118" target="_blank" rel="noopener">App Store ↗</a></td>
+              </tr>
+              <tr>
+                <td><strong>Stash</strong></td>
+                <td><span class="os-chip">iOS / macOS</span></td>
+                <td>Clash 风格适配引擎</td>
+                <td>VLESS / SS / Trojan</td>
+                <td><span class="status-yes">● 支持</span></td>
+                <td>覆写 / 策略组</td>
+                <td>轻量</td>
+                <td><span class="diff-med">中等</span></td>
+                <td><a href="https://apps.apple.com/app/stash/id1596063718" target="_blank" rel="noopener">App Store ↗</a></td>
+              </tr>
+              <tr>
+                <td><strong>Surge 5</strong></td>
+                <td><span class="os-chip">macOS / iOS</span></td>
+                <td>顶级专有网络架构</td>
+                <td>Snell / Trojan / SS</td>
+                <td><span class="status-yes">● 增强模式 (顶尖)</span></td>
+                <td>企业级分流/调试</td>
+                <td>极度克制</td>
+                <td><span class="diff-hard">极客高阶</span></td>
+                <td><a href="https://nssurge.com/" target="_blank" rel="noopener">官网购买 ↗</a></td>
+              </tr>
+              <tr>
+                <td><strong>v2rayNG</strong></td>
+                <td><span class="os-chip">Android</span></td>
+                <td>Xray 官方内核</td>
+                <td>VLESS / VMess / SS</td>
+                <td><span class="status-yes">● VpnService</span></td>
+                <td>分应用代理</td>
+                <td>约 40-70MB</td>
+                <td><span class="diff-easy">新手必备</span></td>
+                <td><a href="https://github.com/2dust/v2rayNG/releases" target="_blank" rel="noopener">GitHub 官方 ↗</a></td>
+              </tr>
+              <tr>
+                <td><strong>OpenClash</strong></td>
+                <td><span class="os-chip">OpenWrt 软路由</span></td>
+                <td>Mihomo / Clash 内核</td>
+                <td>全部主流协议</td>
+                <td><span class="status-yes">● 透明代理/TProxy</span></td>
+                <td>全屋网络自动化分流</td>
+                <td>视路由器硬件</td>
+                <td><span class="diff-hard">需路由基础</span></td>
+                <td><a href="https://github.com/vernesong/OpenClash/releases" target="_blank" rel="noopener">GitHub 官方 ↗</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 第二章：Windows 平台深度实操指南 -->
+      <section id="windows" class="guide-section">
+        <div class="section-heading">
+          <span class="section-num">SECTION 02</span>
+          <h2>Windows 电脑客户端：Clash Verge Rev 与 v2rayN 部署精讲</h2>
+        </div>
+
+        <div class="prose-block">
+          <h3>1. 为什么 Clash Verge Rev 是当下的 Windows 首选？</h3>
+          <p>
+            由于历史知名的 Clash for Windows (CFW) 核心作者在 2023 年底归档了代码库，市面上流传着大量植入盗号木马的第三方改版安装包。<strong>Clash Verge Rev</strong> 是由活跃开源社区在原有 Clash Verge 基础上深度重构的现代化替代品。它底层采用目前维护度最高的 <strong>Mihomo (原名 Clash.Meta) 内核</strong>，完整支持 VLESS（含 Vision / Reality）、Shadowsocks 2022、Hysteria2 等前沿抗封锁协议，并拥有原生中文图形界面。
+          </p>
+
+          <div class="step-guide-card">
+            <h4>Clash Verge Rev 标准五步部署流程：</h4>
+            <ol>
+              <li>
+                <strong>下载安装包：</strong> 前往官方 GitHub Releases 页面，根据您的 Windows 系统架构选择安装文件。64 位现代电脑选择 <code>Clash.Verge_x.x.x_x64-setup.exe</code>，ARM 架构平板选择 <code>arm64-setup.exe</code>。
+              </li>
+              <li>
+                <strong>安装服务模式 (Service Mode)：</strong> 打开客户端后，点击左侧菜单进入「设置 (Settings)」，找到「服务模式 (Service Mode)」，点击右侧的「安装 (Install)」。提示授权时允许管理员运行，安装完成后圆点变为绿色。此步骤至关重要，是后续开启全局 TUN 虚拟网卡的前提。
+              </li>
+              <li>
+                <strong>导入机场订阅：</strong> 点击左侧「订阅 (Profiles)」，在上方输入框粘贴从 <a href={withBase('/airports/guangsu/')}>光速云</a> 或其他机场后台复制的 Clash 订阅链接，点击「导入 (Import)」。导入成功后右键该配置卡片，选择「使用 (Use)」并右键点击「更新 (Update)」。
+              </li>
+              <li>
+                <strong>分流策略组选择：</strong> 点击左侧「代理 (Proxies)」，在顶部选择「规则 (Rule)」模式。展开 <code>PROXY</code> 策略组，推荐优先选择延迟低、丢包少的香港 IEPL 或日本专线节点；对于流媒体或 AI 分组，可单独选中标注有解锁支持的节点。
+              </li>
+              <li>
+                <strong>开启系统接管：</strong> 返回左侧菜单，在「系统代理 (System Proxy)」右侧打开开关。若需要接管外服网络游戏、Steam、Discord 或 Git 终端，同时打开「TUN 模式 (TUN Mode)」即可。
+              </li>
+            </ol>
+          </div>
+
+          <h3>2. v2rayN：多核心极客的高并发与多协议管理方案</h3>
+          <p>
+            如果您的机场提供了海量单节点链接、VLESS 原生链接或 Trojan 节点，且您喜欢精细调校底层路由与 Xray 核心参数，<strong>v2rayN</strong> 是无可替代的生产力工具。
+          </p>
+          <ul>
+            <li><strong>核心文件选择：</strong> 下载时建议选择携带全核心的 <code>v2rayN-with-dependencies.zip</code>，免去手动安装 .NET 8 桌面运行时库的麻烦。</li>
+            <li><strong>一键真连接延迟测速：</strong> 导入节点后按 <code>Ctrl + A</code> 全选节点，按 <code>Ctrl + R</code> 即可进行真实的 TCP Ping 测试，按 <code>Ctrl + O</code> 即可进行 HTTP 真实可用性测速，速度与丢包情况一目了然。</li>
+            <li><strong>UWP 应用回环豁免：</strong> Windows 10/11 的微软商店应用（UWP）受系统沙盒保护，默认无法连接 127.0.0.1 代理端口。在 v2rayN 顶部点击「工具」→「启用 Windows UWP 回环代理豁免」，勾选全部应用并保存，即可彻底解决微软应用商店或 Xbox 无法联网的问题。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 第三章：macOS 苹果电脑配置指南 -->
+      <section id="macos" class="guide-section">
+        <div class="section-heading">
+          <span class="section-num">SECTION 03</span>
+          <h2>macOS 苹果电脑端：Apple Silicon 适配、权限授予与极客选型</h2>
+        </div>
+
+        <div class="prose-block">
+          <h3>1. 芯片架构选择：避免通过 Rosetta 2 损耗性能</h3>
+          <p>
+            现代 Mac 绝大部分已经采用自研 Apple Silicon（M1/M2/M3/M4 系列芯片）。在下载 <code>.dmg</code> 安装镜像时，务必根据处理器型号选择对应的构建包：
+          </p>
+          <ul>
+            <li><strong>Apple Silicon (M系列芯片)：</strong> 必须下载文件名包含 <code>aarch64.dmg</code> 或 <code>arm64.dmg</code> 的版本，能以原生 ARM 指令集运行，CPU 占用率低于 0.5%，功耗与发热极小。</li>
+            <li><strong>Intel 老款芯片：</strong> 请下载包含 <code>x64.dmg</code> 的版本。切勿在 M 芯片电脑上下载 x64 版本，否则会强制调用 Rosetta 2 转译，显著增加电量消耗。</li>
+          </ul>
+
+          <h3>2. macOS 首次打开“已损坏，无法打开”安全拦截解决办法</h3>
+          <p>
+            由于开源代理客户端并未向苹果官方支付高昂的开发者公证年费，首次安装后打开常提示 <em>“应用已损坏，您应该将它移到废纸篓”</em>。这并非文件损坏，而是 Gatekeeper 保护机制：
+          </p>
+          <div class="code-terminal">
+            <code>sudo xattr -r -d com.apple.quarantine /Applications/Clash\ Verge.app</code>
+          </div>
+          <p class="muted" style="font-size: 0.85rem;">
+            打开终端（Terminal），复制并粘贴上述命令回车，输入开机密码回车即可彻底接触隔离属性，随后即可顺畅双击运行。
+          </p>
+
+          <h3>3. 高阶生产力标杆：Surge for Mac</h3>
+          <p>
+            对于专业软件工程师、网络架构师和独立开发者而言，Surge Mac 是 macOS 生态中性能最霸道、设计最优雅的综合网络工具。其具备独立的虚拟网卡驱动与增强模式（Enhanced Mode），支持深度的本地网络流量监控、DNS 劫持排查、远程规则覆写与基于 JavaScript 的动态请求篡改。如果预算充裕，配合机场的专属托管配置是 Mac 上的终极体验。
+          </p>
+        </div>
+      </section>
+
+      <!-- 第四章：iOS 苹果手机客户端深度实操 -->
+      <section id="ios" class="guide-section">
+        <div class="section-heading">
+          <span class="section-num">SECTION 04</span>
+          <h2>iOS 苹果手机端：Shadowrocket（小火箭）与 Stash 完整指南</h2>
+        </div>
+
+        <div class="prose-block">
+          <h3>1. 海外 Apple ID 获取与正版购买注意事项</h3>
+          <p>
+            在 iOS 生态中，Shadowrocket（小火箭，官方开发者为 <em>Pan modal LLC</em>）是最普及、性价比最高的工具（美区仅需 $2.99 买断）。<strong>获取安全要点：</strong>
+          </p>
+          <div class="warning-alert-card">
+            <strong>⚠️ 账号安全红线警告：</strong><br />
+            获取海外 Apple ID 后，<strong>只能在 App Store 商店应用内部点击右上角头像登录</strong>！绝对不能在 iPhone 系统「设置」页面最顶部的「iCloud 个人中心」登录未知公共账号！否则一旦对方开启“查找我的 iPhone”并锁机勒索，将导致设备无法开机。
+          </div>
+
+          <h3>2. 小火箭（Shadowrocket）标准配置四步法：</h3>
+          <ol>
+            <li><strong>添加节点/订阅：</strong> 登录进入小火箭主页，点击右上角「+」号。类型选择「Subscribe」，在「URL」处粘贴从机场后台复制的专属订阅链接，备注填写机场名称（如“光速云”），点击右上角保存。</li>
+            <li><strong>拉取节点：</strong> 保存后小火箭会自动连接服务器拉取节点列表。若未自动拉取，在首页配置列表中找到该订阅条目，用手指按住向右滑动并点击「更新」。</li>
+            <li><strong>全局路由模式设定：</strong> 在小火箭首页中部的「全局路由」处，务必确保选中的是<strong>「配置 (Config)」</strong>模式，切勿长期选择「代理 (Proxy)」模式，否则所有访问国内微信、美团、网银的流量都会绕行海外，不仅极其浪费流量而且会导致网银异地告警。</li>
+            <li><strong>启动连接与权限授权：</strong> 勾选一个低延迟专线节点，点击顶部的连接总开关。系统首次会弹出“Shadowrocket 想要添加 VPN 配置”，输入手机锁屏密码即可建立加密连接。</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 第五章：Android 安卓手机客户端避坑实操 -->
+      <section id="android" class="guide-section">
+        <div class="section-heading">
+          <span class="section-num">SECTION 05</span>
+          <h2>Android 安卓端：v2rayNG、FlClash 与假冒套壳 APK 防坑</h2>
+        </div>
+
+        <div class="prose-block">
+          <h3>1. 警惕假冒代理客户端：正版开源来源核实</h3>
+          <p>
+            安卓系统的高度开放性导致其成为恶意软件的重灾区。国内众多流氓下载站、山寨破解论坛充斥着名称为“Clash破解版”、“小火箭安卓版”的钓鱼 APK。
+          </p>
+          <p>
+            <strong>事实说明：</strong> iOS 上的 Shadowrocket（小火箭）从未推出过官方安卓版本，市面上所有声称“小火箭安卓版”的应用均为山寨恶意吸费软件！安卓端请认准正规开源项目：<strong>v2rayNG (2dust)</strong> 或 <strong>FlClash (chen08209)</strong>。
+          </p>
+
+          <h3>2. v2rayNG 高效配置与电池后台常驻优化</h3>
+          <p>
+            安卓系统的杀后台机制极其激进，常常导致手机熄屏几分钟后代理断开：
+          </p>
+          <ul>
+            <li><strong>订阅导入：</strong> 打开 v2rayNG，点击左上角侧边栏「订阅分组设置」→ 右上角「+」→ 填写备注并粘贴订阅链接保存。返回主界面点击右上角三点菜单选择「更新订阅」。</li>
+            <li><strong>分流预设选择：</strong> 在左侧菜单点击「设置」，找到「路由设置」→ 选择「绕过大陆地址 (Bypass LAN and mainland China)」，实现国内应用直连、海外服务自动加速。</li>
+            <li><strong>电池白名单防杀：</strong> 进入手机「系统设置」→「电池与性能」→ 找到 v2rayNG，将其后台省电策略设置为<strong>“无限制 (No restrictions)”</strong>，并在手机多任务卡片栏将应用右上角加锁，保证全天候后台稳定运行不被系统误杀。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 第六章：Linux 与 OpenWrt 软路由透明代理 -->
+      <section id="router" class="guide-section">
+        <div class="section-heading">
+          <span class="section-num">SECTION 06</span>
+          <h2>Linux 与 OpenWrt 软路由系统：全屋网络无感透明代理</h2>
+        </div>
+
+        <div class="prose-block">
+          <h3>1. OpenClash：家庭主路由与旁路由的首选解决方案</h3>
+          <p>
+            通过在 OpenWrt 路由器中部署 OpenClash，全屋所有连接 Wi-Fi 的终端（包括不支持安装代理软件的 Switch、PS5、Apple TV、智能音箱等）均可无缝享受专线加速与流媒体解锁。
+          </p>
+          <ul>
+            <li><strong>运行模式建议：</strong> 推荐选择 <strong>Meta 内核 + TUN 混合模式 (Fake-IP)</strong>，无需在各设备上单独配置静态网关，DNS 解析由路由器统一劫持至本地缓存，不仅网页响应速度飞快，而且杜绝了本地运营商的 DNS 投毒污染。</li>
+            <li><strong>硬件要求与散热：</strong> 软路由建议配备 Intel J4125、N5105 或更高级别的 X86 架构小主机，千兆满速下 CPU 占用低于 15%；若是 ARM 架构硬路由（如 MT7981/MT7986 平台），请确保开启硬件 NAT 加速以降低芯片发热。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 第七章：深度技术原理：内核、分流与抗封锁机制 -->
+      <section id="principles" class="guide-section">
+        <div class="section-heading">
+          <span class="section-num">SECTION 07</span>
+          <h2>技术纵深：内核架构、分流逻辑与抗风控原理解密</h2>
+        </div>
+
+        <div class="prose-block">
+          <h3>1. 三大主流开源内核深度技术对比</h3>
+          <p>
+            用户所使用的图形客户端实际上只是一个操作界面（GUI），真正负责网络发包、协议加密解密与流量分流的是底层内核（Core）。目前主流内核分为三大流派：
+          </p>
+          <div class="kernel-compare-grid">
+            <div class="kernel-box">
+              <h4>Mihomo (原 Clash.Meta)</h4>
+              <p class="muted"><strong>定位：</strong> 当前全平台规则代理最强引擎</p>
+              <p>完整继承原有 Clash 的策略组与规则语法，扩展支持 VLESS、Shadowsocks 2022、Hysteria2 与 TUIC 等现代协议。在多节点测速、基于延迟的自动选路（Fallback/URL-Test）与 TUN 虚拟网卡驱动集成方面达到了极高的工业成熟度。</p>
+            </div>
+            <div class="kernel-box">
+              <h4>Xray-core</h4>
+              <p class="muted"><strong>定位：</strong> 协议协议前沿探索与单点穿透标杆</p>
+              <p>XTLS 架构的提出者，主打极致的原生性能与纯净度。XTLS Vision 模式消除了双重 TLS 加密开销，使数据包特征完全融入普通 HTTPS 流量，在公网环境下的伪装与穿透表现独步业界。</p>
+            </div>
+            <div class="kernel-box">
+              <h4>sing-box</h4>
+              <p class="muted"><strong>定位：</strong> 下一代通用网络代理核心平台</p>
+              <p>采用纯 Go 语言从零实现，架构高度抽象与模块化。内存开销极小，特别适合在嵌入式路由器或老旧设备中运行。其创新的规则集（Rule-Set）二进制格式大幅加快了巨型域名黑白名单的加载速度。</p>
+            </div>
+          </div>
+
+          <h3>2. 系统代理 (System Proxy) 与 TUN 虚拟网卡底层逻辑区别</h3>
+          <p>
+            理解这两种模式的区别是避免“为什么我开了代理但游戏/终端还是没翻墙”的关键：
+          </p>
+          <div class="tech-card-dual">
+            <div>
+              <h4>系统代理 (System Proxy)</h4>
+              <p>本质上是在 Windows 注册表或 macOS 系统偏好中写入环境变量（如 <code>127.0.0.1:7890</code>）。<strong>局限性：</strong> 它是一种弱约定。只有主动向操作系统询问代理设置的软件（如 Edge、Chrome 浏览器）才会自觉将流量发往该端口。命令行 CMD、PowerShell、很多外服联机游戏以及特定桌面软件直接向物理网卡发送 TCP 原始套接字，完全绕过了系统代理。</p>
+            </div>
+            <div>
+              <h4>TUN 虚拟网卡 (TUN Mode)</h4>
+              <p>在操作系统网络协议栈中创建一张名为 <code>Mihomo</code> 或 <code>wintun</code> 的虚拟网络适配器，并通过修改系统默认路由表，将默认网关指向该虚拟网卡。<strong>优势：</strong> 所有进出物理网卡的原始 IP 数据包在第二/三层被强行截获并送入客户端进行规则匹配，实现真正的 100% 全系统无感透明接管。</p>
+            </div>
+          </div>
+
+          <h3>3. Fake-IP 机制与 DNS 泄露防范原理</h3>
+          <p>
+            传统模式下，访问 <code>google.com</code> 时，本地计算机会先向当地电信宽带的 114.114.114.114 发起 DNS 查询，这直接将您的访问意图暴露给本地网络监控。而在 <strong>Fake-IP 模式</strong>下，客户端在接收到 DNS 请求瞬间，直接伪造返回一个保留网段的虚拟 IP（如 <code>198.18.0.15</code>），并将真正的域名封装在加密的代理流量中发送至海外专线落地机，由海外服务器在远端执行实际 DNS 解析，从根源上杜绝了 DNS 劫持与访问记录泄露。
+          </p>
+        </div>
+      </section>
+
+      <!-- 第八章：常见故障排查诊断手册 (10大高频场景) -->
+      <section id="troubleshooting" class="guide-section">
+        <div class="section-heading">
+          <span class="section-num">SECTION 08</span>
+          <h2>全场景故障诊断与排障速查手册 (10 大典型错误)</h2>
+          <p class="muted">
+            遇到节点变红、全部超时或无法上网？按照以下经过数万次实测验证的诊断流程依次排查。
+          </p>
+        </div>
+
+        <div class="trouble-list">
+          <div class="trouble-item">
+            <div class="trouble-header">
+              <span class="err-badge">故障 01</span>
+              <h4>刚导入订阅，测速显示所有节点全部超时 (Timeout) 或 1000ms+</h4>
+            </div>
+            <p><strong>根本原因：</strong> 90% 以上情况是本地设备的<strong>系统时间不准确</strong>！TLS 1.3 现代加密协议依赖严格的 UTC 时间戳，时钟误差大于 30 秒将直接导致 TLS Handshake 失败。</p>
+            <p class="solution"><strong>解决办法：</strong> 进入系统「设置」→「时间和语言」→ 确保「自动设置时间」开关已打开，并手动点击一次「立即同步 (Sync Now)」。同步完成后重新在客户端测速，节点将瞬间全部复绿。</p>
+          </div>
+
+          <div class="trouble-item">
+            <div class="trouble-header">
+              <span class="err-badge">故障 02</span>
+              <h4>开启代理后，国内网站（百度/淘宝/微信）完全打不开或加载奇慢</h4>
+            </div>
+            <p><strong>根本原因：</strong> 误将客户端全局路由切换成了「全局模式 (Global)」，导致国内大流量全部被强行转发至海外，或者本地分流规则文件损坏。</p>
+            <p class="solution"><strong>解决办法：</strong> 将路由模式严格切换为<strong>「规则模式 (Rule)」</strong>。在客户端设置中更新一次 GeoIP 与 GeoSite 数据库，国内流量将自动命中 <code>DIRECT</code> 直连通道。</p>
+          </div>
+
+          <div class="trouble-item">
+            <div class="trouble-header">
+              <span class="err-badge">故障 03</span>
+              <h4>启动客户端提示 7890 或 7897 端口被占用 (Port Already In Use)</h4>
+            </div>
+            <p><strong>根本原因：</strong> 电脑后台残留了其他代理软件（如旧版 Clash、v2rayN、抓包工具 Fiddler）未完全退出，占用了混合代理监听端口。</p>
+            <p class="solution"><strong>解决办法：</strong> 按 <code>Ctrl + Shift + Esc</code> 打开任务管理器，在后台进程中结束残留的 <code>clash-core</code> 或 <code>v2ray</code> 进程；或者在 Clash Verge 设置中将端口修改为未被占用的冷门端口（如 <code>17890</code>）。</p>
+          </div>
+
+          <div class="trouble-item">
+            <div class="trouble-header">
+              <span class="err-badge">故障 04</span>
+              <h4>关闭客户端后，电脑完全无法正常上网，网页提示“代理服务器无响应”</h4>
+            </div>
+            <p><strong>根本原因：</strong> 客户端非正常退出（如系统死机、强制关机或崩溃），导致操作系统注册表中的系统代理开关未被还原，依旧指向已经关闭的 127.0.0.1 端口。</p>
+            <p class="solution"><strong>解决办法：</strong> 打开 Windows「设置」→ 搜索「代理设置」→ 将「使用代理服务器」开关手动关闭即可立刻恢复正常网络。</p>
+          </div>
+
+          <div class="trouble-item">
+            <div class="trouble-header">
+              <span class="err-badge">故障 05</span>
+              <h4>登录 ChatGPT 或 Claude 提示“Access Denied”或陷入人机验证死循环</h4>
+            </div>
+            <p><strong>根本原因：</strong> 您连接的节点使用的是机房广播 IP，已被 OpenAI / Anthropic 列入风控名单，或因为频繁切换不同国家的节点触发了账户异常风控。</p>
+            <p class="solution"><strong>解决办法：</strong> 在客户端中展开节点列表，切换至标注有原生解锁或由专属专线提供的独立落地节点（如 <a href={withBase('/airports/guangsu/')}>光速云</a> 的专用 AI 节点），并清理浏览器对于该站点的所有 LocalStorage 与 Cookie 数据后重试。</p>
+          </div>
+
+          <div class="trouble-item">
+            <div class="trouble-header">
+              <span class="err-badge">故障 06</span>
+              <h4>开启 TUN 模式后游戏延迟反而变高，或提示虚拟网卡无法创建</h4>
+            </div>
+            <p><strong>根本原因：</strong> 第三方杀毒软件（如 360、火绒或公司管控软件）拦截了 <code>wintun.dll</code> 驱动注入，或未安装客户端服务模式。</p>
+            <p class="solution"><strong>解决办法：</strong> 在杀毒软件中将客户端安装目录添加为信任白名单，并在客户端设置中以管理员权限重新安装「服务模式 (Service Mode)」。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第九章：常见问题 FAQ 与边界决策 -->
+      <section id="faq" class="guide-section">
+        <div class="section-heading">
+          <span class="section-num">SECTION 09</span>
+          <h2>高频焦点答疑与技术边界</h2>
+        </div>
+
+        <div class="faq-accordion">
+          <div class="faq-card">
+            <h4>Q1：机场自带的自研定制客户端好，还是第三方通用客户端好？</h4>
+            <p>
+              <strong>结论：各有适用场景。</strong> 机场自研客户端（如飞猫云定制版）免去了手动配置订阅、导入更新等繁琐步骤，一键登录即可使用，适合小白新手；但如果追求高度定制的分流规则、TUN 全局接管、免广告纯净体验以及跨多个机场节点自由调度，第三方开源客户端（Clash Verge Rev、Shadowrocket）上限更高且绝无后门代码。
+            </p>
+          </div>
+
+          <div class="faq-card">
+            <h4>Q2：不同客户端之间，导出的订阅链接可以通用吗？</h4>
+            <p>
+              <strong>结论：完全可以。</strong> 绝大部分规范机场后台均提供“一键转换”功能，同一个订阅在 Clash、Shadowrocket、Sing-box、v2rayN 之间可以无缝转换。即使后台只提供了单协议链接，也可通过权威可信的本地订阅转换工具转换为 Clash 专用的 YAML 格式。
+            </p>
+          </div>
+
+          <div class="faq-card">
+            <h4>Q3：开启系统代理后，微信通话、国内游戏会消耗我的机场套餐流量吗？</h4>
+            <p>
+              <strong>结论：在规则模式下绝不会。</strong> 正规客户端在「规则 (Rule)」模式下均内置了庞大的中国大陆 IP 与域名白名单（ChinaMax / GeoSite:cn）。国内流量直接通过物理网卡直连通信，既不经过海外专线，也不计入机场套餐流量。
+            </p>
+          </div>
+
+          <div class="faq-card">
+            <h4>Q4：为什么有的客户端测速几百兆，看 YouTube 却依然只有 1080P？</h4>
+            <p>
+              <strong>结论：测速仅代表瞬时突发带宽，不代表长时流媒体吞吐。</strong> 部分不良服务商在测速节点给予极高优先级，但实际长视频缓存受到限速或 QoS 限制。在 <a href={withBase('/speedtest')}>测速实测中心</a> 查看晚高峰持续下载指标与丢包率更为关键。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第十章：优质高兼容专线服务商承接卡片 (Conversion Funnel) -->
+      <section id="airports-bridge" class="guide-section" style="border-top: 1px solid var(--border); padding-top: 3rem;">
+        <div class="section-heading">
+          <span class="section-num">SECTION 10</span>
+          <h2>优质客户端需要搭配可靠专线：编辑首选推荐</h2>
+          <p class="muted">
+            好马配好鞍。配置好客户端后，连接稳定可靠的专线节点才能充分发挥千兆吞吐与低延迟优势。
+          </p>
+        </div>
+
+        <div class="bridge-cards-grid">
+          <!-- 卡片 1：光速云 -->
+          <div class="bridge-card">
+            <div class="bridge-header">
+              <span class="badge" style="background: #2563eb; color: #fff;">2026 年度首推</span>
+              <span class="price-tag">{featuredAirport.minPrice}</span>
+            </div>
+            <h3>{featuredAirport.name}</h3>
+            <p class="muted" style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 1rem;">
+              {featuredAirport.summary}
+            </p>
+            <ul class="bridge-feats">
+              <li>✓ <strong>协议架构：</strong> VLESS 现代协议 + IEPL 企业级双专线</li>
+              <li>✓ <strong>客户端兼容：</strong> 自研一键客户端 + 100% 完美支持 Clash/小火箭</li>
+              <li>✓ <strong>实测表现：</strong> 香港 22ms 529Mbps，全区流媒体与 Claude 稳定支持</li>
+            </ul>
+            <div class="bridge-action">
+              <a class="btn btn-primary" href={featuredAirport.affUrl} target="_blank" rel="nofollow sponsored noopener">
+                直达光速云官网 (优惠码: AMM) ↗
+              </a>
+              <a class="btn" href={withBase(`/airports/${featuredAirport.id}/`)}>
+                查看深度评测
+              </a>
+            </div>
+          </div>
+
+          <!-- 卡片 2：飞猫云 -->
+          <div class="bridge-card">
+            <div class="bridge-header">
+              <span class="badge" style="background: var(--surface-2); border: 1px solid var(--border);">新手开箱即用</span>
+              <span class="price-tag">{feimaoAirport.minPrice}</span>
+            </div>
+            <h3>{feimaoAirport.name}</h3>
+            <p class="muted" style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 1rem;">
+              {feimaoAirport.summary}
+            </p>
+            <ul class="bridge-feats">
+              <li>✓ <strong>起步价格：</strong> 年付 84 元折合仅 7 元/月，学生党与轻度用户首选</li>
+              <li>✓ <strong>专属客户端：</strong> 下载登录即用，无需配置订阅与规则</li>
+              <li>✓ <strong>节点覆盖：</strong> 亚太及欧美主流节点全覆盖，Netflix/YouTube 畅看</li>
+            </ul>
+            <div class="bridge-action">
+              <a class="btn btn-primary" href={feimaoAirport.affUrl} target="_blank" rel="nofollow sponsored noopener">
+                直达飞猫云官网 (优惠码: flycat888) ↗
+              </a>
+              <a class="btn" href={withBase(`/airports/${feimaoAirport.id}/`)}>
+                查看深度评测
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2.5rem;">
+          <a class="btn" href={withBase('/airports')} style="border: 1px solid var(--border); font-size: 0.95rem; padding: 0.65rem 1.75rem;">
+            浏览全部 42 家机场品牌库与测速榜单 →
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .client-guide-wrapper {
+    padding-bottom: 4rem;
+  }
+  .guide-header {
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 0 1.5rem;
+  }
+  .guide-breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+  .guide-breadcrumb .sep {
+    margin: 0 0.5rem;
+    opacity: 0.6;
+  }
+  .guide-title {
+    font-size: clamp(1.85rem, 4vw, 2.65rem);
+    line-height: 1.25;
+    margin: 0.25rem 0 1rem;
+    font-weight: 800;
+  }
+  .guide-lead {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 80ch;
+    margin-bottom: 2rem;
+  }
+  .quick-summary-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .summary-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .summary-item {
+    background: var(--surface-2);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+  }
+  .summary-item .os-tag {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .summary-item strong {
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+  .summary-item p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .toc-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+  }
+  .toc-title {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .toc-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .toc-links a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+  }
+  .toc-links a:hover {
+    color: var(--accent);
+    background: var(--surface-2);
+  }
+  .guide-content {
+    margin-top: 3rem;
+  }
+  .guide-section {
+    margin-bottom: 4rem;
+    scroll-margin-top: 5rem;
+  }
+  .section-heading {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+  }
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .section-heading h2 {
+    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+    margin: 0.3rem 0;
+  }
+  .table-scroll-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .comparison-table th {
+    background: var(--surface-2);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .os-chip {
+    background: var(--surface-2);
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+  }
+  .status-yes {
+    color: #10b981;
+    font-weight: 600;
+    font-size: 0.82rem;
+  }
+  .diff-easy {
+    color: #10b981;
+    font-weight: 600;
+  }
+  .diff-med {
+    color: #f59e0b;
+    font-weight: 600;
+  }
+  .diff-hard {
+    color: #ef4444;
+    font-weight: 600;
+  }
+  .prose-block h3 {
+    font-size: 1.25rem;
+    margin: 1.75rem 0 0.75rem;
+  }
+  .prose-block p {
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .prose-block ul,
+  .prose-block ol {
+    line-height: 1.8;
+    padding-left: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .step-guide-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .step-guide-card h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+  }
+  .step-guide-card ol {
+    margin-bottom: 0;
+  }
+  .step-guide-card li {
+    margin-bottom: 0.75rem;
+  }
+  .code-terminal {
+    background: #0d1117;
+    color: #58a6ff;
+    font-family: var(--font-mono);
+    padding: 0.85rem 1.25rem;
+    border-radius: var(--radius-sm);
+    margin: 1rem 0 0.5rem;
+    overflow-x: auto;
+    font-size: 0.88rem;
+  }
+  .warning-alert-card {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-left: 4px solid #ef4444;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-sm);
+    margin: 1.25rem 0;
+    line-height: 1.7;
+    font-size: 0.9rem;
+  }
+  .kernel-compare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+  }
+  .kernel-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+  }
+  .kernel-box h4 {
+    margin: 0 0 0.3rem;
+    font-size: 1.1rem;
+  }
+  .kernel-box p {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin-bottom: 0;
+  }
+  .tech-card-dual {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+  }
+  .tech-card-dual > div {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+  }
+  .tech-card-dual h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+  }
+  .tech-card-dual p {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .trouble-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .trouble-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+  }
+  .trouble-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .err-badge {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+  }
+  .trouble-header h4 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  .trouble-item p {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin-bottom: 0.5rem;
+  }
+  .trouble-item .solution {
+    color: #10b981;
+    margin-bottom: 0;
+  }
+  .faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .faq-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+  }
+  .faq-card h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+    color: var(--accent);
+  }
+  .faq-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .bridge-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .bridge-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--shadow-sm);
+  }
+  .bridge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .price-tag {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1.1rem;
+  }
+  .bridge-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.35rem;
+  }
+  .bridge-feats {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+  .bridge-action {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .bridge-action .btn {
+    flex: 1;
+    text-align: center;
+    font-size: 0.88rem;
+    padding: 0.55rem 0.85rem;
+  }
+
+  @media (max-width: 640px) {
+    .toc-bar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .guide-title {
+      font-size: 1.6rem;
+    }
+    .comparison-table th,
+    .comparison-table td {
+      padding: 0.6rem 0.75rem;
+      font-size: 0.8rem;
+    }
+    .trouble-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

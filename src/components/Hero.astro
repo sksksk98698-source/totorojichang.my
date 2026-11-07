@@ -1,40 +1,44 @@
 ---
-import { typingRoles } from '../data/resume';
-import { site, withBase } from '../data/site';
+import { withBase } from '../data/site';
 import Icon from './Icon.astro';
 
-const rolesJson = JSON.stringify(typingRoles);
-const nameParts = site.author.name.split(' ');
-const firstName = nameParts.shift() ?? '';
-const lastName = nameParts.join(' ');
+const roles = [
+  'IEPL / IPLC 专线网络实测',
+  '42 家主流机场深度测评',
+  'ChatGPT & 流媒体全区解锁',
+  '全平台客户端配置与分流',
+];
+const rolesJson = JSON.stringify(roles);
 ---
 
 <section class="hero">
   <div class="stars" aria-hidden="true"></div>
   <div class="container hero-inner">
     <div>
-      <p class="hero-greeting">Hello, I'm</p>
-      <h1>{firstName} {lastName && <span class="accent">{lastName}</span>}</h1>
+      <p class="hero-greeting">2026 网络观测实验室</p>
+      <h1>龙猫机场 <span class="accent">测速与测评中心</span></h1>
       <p class="hero-typed">
         <span class="typed" id="typed-roles" data-roles={rolesJson}></span><span class="typed-cursor" aria-hidden="true">▍</span>
       </p>
 
       <p class="hero-bio">
-        Write a short bio here — who you are, what you build, what you're
-        curious about. Two or three sentences is plenty.
+        专为跨境远程协作、AI 深度会话（ChatGPT/Claude）、全区 4K 流媒体与低延迟外服搭建的中立网络观测平台。基于晚高峰丢包实测、节点拓扑透明度与真实价格体系，拒绝盲目吹捧。
       </p>
 
-      <div class="social-row">
-        {Object.values(site.socials).map((s) => (
-          <a class="social-link" href={withBase(s.url)} target={s.url.startsWith('http') ? '_blank' : undefined} rel="noopener">
-            {s.icon && <Icon name={s.icon} />}
-            {s.label}
-          </a>
-        ))}
+      <div class="social-row" style="margin-top: 1.5rem; gap: 0.75rem;">
+        <a class="btn btn-primary" href="#featured-top" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.92rem; padding: 0.55rem 1.1rem;">
+          查看编辑首推 (光速云) <Icon name="arrow-right" size={16} />
+        </a>
+        <a class="btn" href={withBase('/airports')} style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.92rem; padding: 0.55rem 1.1rem; border: 1px solid var(--border);">
+          浏览 42 家品牌库
+        </a>
+        <a class="btn" href={withBase('/speedtest')} style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.92rem; padding: 0.55rem 1.1rem; border: 1px solid var(--border);">
+          实测测速大图
+        </a>
       </div>
     </div>
 
-    <img class="hero-avatar" src={withBase('/img/avatar.svg')} alt={`Portrait of ${site.author.name}`} width="220" height="220" />
+    <img class="hero-avatar" src={withBase('/img/avatar.svg')} alt="龙猫机场 Totoro Jichang 品牌头像" width="220" height="220" />
   </div>
 </section>
 

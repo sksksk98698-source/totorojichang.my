@@ -4,7 +4,7 @@ import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
-import { site, withBase } from '../data/site';
+import { site, withBase, toAbsoluteUrl } from '../data/site';
 
 interface Props {
   title?: string;
@@ -14,53 +14,87 @@ interface Props {
   canonical?: string;
   noindex?: boolean;
   jsonLd?: object;
+  publishedTime?: string | Date;
+  modifiedTime?: string | Date;
+  author?: string;
+  tags?: string[];
 }
 
 const {
   title,
   description = site.description,
-  image = '/img/og.jpg',
+  image = '/og.jpg',
   type = 'website',
-  canonical = site.url + Astro.url.pathname,
+  canonical,
   noindex = false,
   jsonLd,
+  publishedTime,
+  modifiedTime,
+  author = site.author.name,
+  tags = [],
 } = Astro.props;
 
 const pageTitle = title ? `${title} · ${site.shortTitle}` : site.title;
-const imageUrl = withBase(image);
+const canonicalUrl = canonical ?? toAbsoluteUrl(Astro.url.pathname);
+const absoluteImageUrl = toAbsoluteUrl(image);
+
+const pubIso = publishedTime ? new Date(publishedTime).toISOString() : undefined;
+const modIso = modifiedTime ? new Date(modifiedTime).toISOString() : pubIso;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="">
+<html lang="zh-CN" data-theme="">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <meta name="author" content={site.author.name} />
-    <link rel="canonical" href={canonical} />
+    <meta name="author" content={author} />
+    <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <link rel="icon" type="image/x-icon" href={withBase('/favicon.ico')} />
-    <link rel="alternate" type="application/rss+xml" title={site.title} href={withBase('/rss.xml')} />
+    <link rel="alternate" type="application/rss+xml" title={site.title} href={toAbsoluteUrl('/rss.xml')} />
     <meta name="generator" content={Astro.generator} />
 
-    {noindex && <meta name="robots" content="noindex" />}
+    <!-- 索引抓取控制 (Robots) -->
+    {noindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    )}
 
-    <!-- Open Graph -->
+    <!-- 搜索引擎站长平台所有权验证 (预留支持) -->
+    {site.verification?.google && <meta name="google-site-verification" content={site.verification.google} />}
+    {site.verification?.bing && <meta name="msvalidate.01" content={site.verification.bing} />}
+    {site.verification?.baidu && <meta name="baidu-site-verification" content={site.verification.baidu} />}
+    {site.verification?.shenma && <meta name="shenma-site-verification" content={site.verification.shenma} />}
+
+    <!-- Open Graph (社交与生成式搜索) -->
     <meta property="og:site_name" content={site.title} />
     <meta property="og:type" content={type} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={imageUrl} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={absoluteImageUrl} />
+    <meta property="og:locale" content="zh_CN" />
 
-    <!-- Twitter -->
+    {type === 'article' && (
+      <>
+        {pubIso && <meta property="article:published_time" content={pubIso} />}
+        {modIso && <meta property="article:modified_time" content={modIso} />}
+        <meta property="article:author" content={author} />
+        {tags.map((tag) => <meta property="article:tag" content={tag} />)}
+      </>
+    )}
+
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image" content={absoluteImageUrl} />
 
-    <!-- Theme: set before paint to avoid flash -->
+    <!-- 主题初始化 -->
     <script is:inline>
       const t = localStorage.getItem('theme');
       const dark = t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
@@ -71,7 +105,7 @@ const imageUrl = withBase(image);
   </head>
   <body>
     <Header />
-    <main>
+    <main id="main-content">
       <slot />
     </main>
     <Footer />

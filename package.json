@@ -1,18 +1,8 @@
 {
-  "name": "astro-wanderer",
+  "name": "totorojichang-site",
   "type": "module",
   "version": "1.0.0",
-  "description": "A personal site theme for Astro — portfolio, blog, and travel photo galleries in one quiet, fast template.",
-  "keywords": [
-    "astro",
-    "astro-theme",
-    "template",
-    "blog",
-    "portfolio",
-    "personal-site",
-    "travel",
-    "photography"
-  ],
+  "description": "Independent systems engineering website, technical publications, and visual journal.",
   "license": "MIT",
   "engines": {
     "node": ">=22.12.0"

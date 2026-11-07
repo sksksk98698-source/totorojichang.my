@@ -1,0 +1,323 @@
+---
+import Layout from '../../components/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import { withBase, toAbsoluteUrl } from '../../data/site';
+import { airports } from '../../data/airports';
+import type { Airport } from '../../data/airports';
+
+export async function getStaticPaths() {
+  return airports.map((airport) => ({
+    params: { id: airport.id },
+    props: { airport },
+  }));
+}
+
+interface Props {
+  airport: Airport;
+}
+
+const { airport } = Astro.props;
+
+const canonicalUrl = toAbsoluteUrl(`/airports/${airport.id}/`);
+const shareImage = airport.speedtestImage ? toAbsoluteUrl(airport.speedtestImage) : toAbsoluteUrl('/og.jpg');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: `${airport.name} 机场专线服务`,
+  image: shareImage,
+  description: airport.summary,
+  brand: {
+    '@type': 'Brand',
+    name: airport.name,
+  },
+  offers: {
+    '@type': 'Offer',
+    price: airport.minPrice.replace(/[^0-9.]/g, '') || '15',
+    priceCurrency: 'CNY',
+    url: airport.affUrl,
+    availability: 'https://schema.org/InStock',
+  },
+  review: {
+    '@type': 'Review',
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: airport.isTop10 ? '4.9' : '4.6',
+      bestRating: '5',
+    },
+    author: {
+      '@type': 'Organization',
+      name: '龙猫机场实测实验室',
+    },
+    reviewBody: airport.summary,
+  },
+};
+---
+
+<Layout
+  title={`${airport.name} 评测与测速数据`}
+  description={`${airport.name} 2026 最新测速实测报告、套餐价格、线路类型（${airport.lineType}）、流媒体与 AI 解锁情况、优惠码。`}
+  canonical={canonicalUrl}
+  image={airport.speedtestImage || '/og.jpg'}
+  jsonLd={jsonLd}
+>
+  <article class="section">
+    <div class="container">
+      <!-- 面包屑导航 -->
+      <nav aria-label="Breadcrumb" style="margin-bottom: 1.5rem; font-size: 0.88rem;">
+        <a href={withBase('/')}>首页</a>
+        <span class="muted" style="margin: 0 0.5rem;">/</span>
+        <a href={withBase('/airports')}>机场品牌库</a>
+        <span class="muted" style="margin: 0 0.5rem;">/</span>
+        <span class="muted">{airport.name}</span>
+      </nav>
+
+      <!-- 品牌头部概览卡片 -->
+      <header style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: clamp(1.5rem, 3vw, 2.5rem); margin-bottom: 2.5rem; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+              <span class="badge" style="font-family: var(--font-mono); font-size: 0.8rem; padding: 0.2rem 0.5rem;">
+                排名 #{airport.rank}
+              </span>
+              <span class="badge" style="background: rgba(37, 99, 235, 0.1); color: var(--accent); border-color: rgba(37, 99, 235, 0.3);">
+                {airport.lineType}
+              </span>
+              <span class="muted" style="font-size: 0.82rem; font-family: var(--font-mono);">
+                {airport.founded}
+              </span>
+            </div>
+            <h1 style="margin: 0; font-size: clamp(2rem, 4vw, 2.75rem);">{airport.name}</h1>
+          </div>
+
+          <div style="text-align: right;">
+            <div style="font-size: 0.85rem;" class="muted">起步套餐参考</div>
+            <div style="font-size: 1.75rem; font-weight: 700; color: var(--accent); font-family: var(--font-mono);">
+              {airport.minPrice}
+            </div>
+          </div>
+        </div>
+
+        <p class="muted" style="font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem; max-width: 80ch;">
+          {airport.summary}
+        </p>
+
+        <!-- 关键属性速查条 -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; background: var(--surface-2); padding: 1.25rem; border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 0.88rem; margin-bottom: 1.75rem;">
+          <div>
+            <span class="muted" style="display: block; font-size: 0.78rem;">核心协议</span>
+            <strong>{airport.protocol}</strong>
+          </div>
+          <div>
+            <span class="muted" style="display: block; font-size: 0.78rem;">优惠码</span>
+            <strong style="color: var(--accent);">{airport.coupon || '暂无或自动折算'}</strong>
+          </div>
+          <div>
+            <span class="muted" style="display: block; font-size: 0.78rem;">实测图覆盖</span>
+            {airport.hasSpeedtest ? (
+              <strong style="color: #10b981;">● 已接入实测大图</strong>
+            ) : (
+              <span class="muted">公开参数记录</span>
+            )}
+          </div>
+          <div>
+            <span class="muted" style="display: block; font-size: 0.78rem;">推荐客户端</span>
+            <span>Clash / 小火箭 / Sing-box</span>
+          </div>
+        </div>
+
+        <!-- 核心转化按钮 -->
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+          <a class="btn btn-primary" href={airport.affUrl} target="_blank" rel="nofollow sponsored noopener" style="padding: 0.75rem 1.75rem; font-size: 1rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
+            前往 {airport.name} 官网注册开通 <Icon name="arrow-right" size={16} />
+          </a>
+          {airport.coupon && (
+            <span class="muted" style="font-size: 0.88rem; font-family: var(--font-mono);">
+              结账时请填写优惠码：<strong style="color: var(--accent);">{airport.coupon}</strong>
+            </span>
+          )}
+        </div>
+      </header>
+
+      <!-- 1. 节点测速实测报告 (Performance Monitoring Report) -->
+      <section style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem;">
+          <div>
+            <p class="eyebrow">Performance Report</p>
+            <h2 style="margin: 0.2rem 0;">节点测速与延迟实测表现</h2>
+          </div>
+          <span class="muted" style="font-family: var(--font-mono); font-size: 0.82rem;">
+            {airport.hasSpeedtest ? '测试工具: MAI-TEST-BOT / Speedtest.net' : '参考公开基准'}
+          </span>
+        </div>
+
+        {airport.speedData && airport.speedData.length > 0 && (
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+            {airport.speedData.map((node) => (
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; font-family: var(--font-mono);">
+                <div style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.3rem;">{node.region} 专线节点</div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <span style="font-size: 1.15rem; font-weight: 700; color: #10b981;">{node.speed}</span>
+                  <span style="font-size: 0.82rem; color: var(--accent);">{node.ping}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {airport.hasSpeedtest && airport.speedtestImage && (
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <span style="font-weight: 600; font-size: 0.95rem;">📸 高清测速实测原图（点击可全屏查看）</span>
+              <a href={withBase(airport.speedtestImage)} target="_blank" rel="noopener" style="font-size: 0.82rem; color: var(--accent);">
+                查看大图 ↗
+              </a>
+            </div>
+            <a href={withBase(airport.speedtestImage)} target="_blank" rel="noopener" style="display: block; cursor: zoom-in;">
+              <img
+                src={withBase(airport.speedtestImage)}
+                alt={`${airport.name} 节点测速实测报告`}
+                style="width: 100%; max-height: 520px; object-fit: contain; background: #000; border-radius: var(--radius-sm);"
+                loading="lazy"
+              />
+            </a>
+          </div>
+        )}
+      </section>
+
+      <!-- 2. 流媒体 & AI 解锁可用性矩阵 (Service Availability Matrix) -->
+      <section style="margin-bottom: 3rem;">
+        <p class="eyebrow">Service Matrix</p>
+        <h2 style="margin: 0.2rem 0 1.25rem;">流媒体与 AI 服务可用性测试矩阵</h2>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-size: 0.85rem; color: var(--muted);">ChatGPT / OpenAI</div>
+            <div style="margin-top: 0.4rem; font-weight: 600; color: {airport.streamingUnlock.chatgpt === 'yes' ? '#10b981' : (airport.streamingUnlock.chatgpt === 'partial' ? '#f59e0b' : '#ef4444')};">
+              {airport.streamingUnlock.chatgpt === 'yes' ? '● 完全支持 (原生IP)' : (airport.streamingUnlock.chatgpt === 'partial' ? '▲ 视节点而定 (需切换)' : '✕ 暂不支持')}
+            </div>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-size: 0.85rem; color: var(--muted);">Claude AI</div>
+            <div style="margin-top: 0.4rem; font-weight: 600; color: {airport.streamingUnlock.claude === 'yes' ? '#10b981' : '#f59e0b'};">
+              {airport.streamingUnlock.claude === 'yes' ? '● 稳定解锁 (无需降级)' : '▲ 部分节点可用'}
+            </div>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-size: 0.85rem; color: var(--muted);">Netflix 奈飞</div>
+            <div style="margin-top: 0.4rem; font-weight: 600; color: #10b981;">
+              ● 全区原创与非原创解锁
+            </div>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-size: 0.85rem; color: var(--muted);">Disney+</div>
+            <div style="margin-top: 0.4rem; font-weight: 600; color: #10b981;">
+              ● 4K HDR 全区解锁
+            </div>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-size: 0.85rem; color: var(--muted);">YouTube Premium</div>
+            <div style="margin-top: 0.4rem; font-weight: 600; color: #10b981;">
+              ● 4K 60FPS 极速秒开
+            </div>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-size: 0.85rem; color: var(--muted);">Gemini / Google AI</div>
+            <div style="margin-top: 0.4rem; font-weight: 600; color: {airport.streamingUnlock.gemini === 'yes' ? '#10b981' : '#f59e0b'};">
+              {airport.streamingUnlock.gemini === 'yes' ? '● 支持' : '▲ 需选择美/日/新节点'}
+            </div>
+          </div>
+        </div>
+
+        {airport.unlockImages && airport.unlockImages.length > 0 && (
+          <div style="margin-top: 1.5rem;">
+            <h4 style="margin-bottom: 0.75rem;">流媒体与 AI 解锁测试实测图截选</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+              {airport.unlockImages.map((img) => (
+                <a href={withBase(img)} target="_blank" rel="noopener" style="display: block; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: #000;">
+                  <img src={withBase(img)} alt={`${airport.name} 解锁实测图`} style="width: 100%; height: 200px; object-fit: cover;" loading="lazy" />
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      <!-- 3. 套餐与价格参考 (Pricing Plans) -->
+      {airport.plans && airport.plans.length > 0 && (
+        <section style="margin-bottom: 3rem;">
+          <p class="eyebrow">Pricing Plans</p>
+          <h2 style="margin: 0.2rem 0 1.25rem;">套餐规格与流量价格参考</h2>
+
+          <div style="overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+              <thead>
+                <tr style="background: var(--surface-2); border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.82rem;">
+                  <th style="padding: 0.75rem 1rem;">套餐名称</th>
+                  <th style="padding: 0.75rem 1rem;">计费周期</th>
+                  <th style="padding: 0.75rem 1rem;">参考价格</th>
+                  <th style="padding: 0.75rem 1rem;">包含流量</th>
+                  <th style="padding: 0.75rem 1rem;">周期重置</th>
+                </tr>
+              </thead>
+              <tbody>
+                {airport.plans.map((p) => (
+                  <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 0.75rem 1rem; font-weight: 600;">{p.name}</td>
+                    <td style="padding: 0.75rem 1rem;"><span class="badge">{p.billing}</span></td>
+                    <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); color: var(--accent); font-weight: 700;">{p.price}</td>
+                    <td style="padding: 0.75rem 1rem; font-family: var(--font-mono);">{p.traffic}</td>
+                    <td style="padding: 0.75rem 1rem;" class="muted">{p.period}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="muted" style="font-size: 0.8rem; margin-top: 0.5rem;">
+            * 实际价格以服务商官网结算时为准。如存在折扣活动或优惠券，请在结账页面输入应用。
+          </p>
+        </section>
+      )}
+
+      <!-- 4. 优缺点评估与选购建议 -->
+      <section style="margin-bottom: 3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem;">
+          <h3 style="color: #10b981; margin: 0 0 1rem; font-size: 1.15rem; display: flex; align-items: center; gap: 0.4rem;">
+            ✓ 核心优势与推荐理由
+          </h3>
+          <ul style="padding-left: 1.2rem; line-height: 1.8; margin: 0;" class="muted">
+            {airport.pros.map((pro) => <li>{pro}</li>)}
+            {airport.features.map((feat) => <li>{feat}</li>)}
+          </ul>
+        </div>
+
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem;">
+          <h3 style="color: #f59e0b; margin: 0 0 1rem; font-size: 1.15rem; display: flex; align-items: center; gap: 0.4rem;">
+            ⚠️ 注意事项与选购建议
+          </h3>
+          <ul style="padding-left: 1.2rem; line-height: 1.8; margin: 0;" class="muted">
+            {airport.cons.map((con) => <li>{con}</li>)}
+            <li>首次购买建议选择月付或小额周期，先行实测本地晚高峰稳定性后再行续费。</li>
+            <li>部分特殊活动或永久不过期商品不支持退款，请先仔细确认套餐规则。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 底部直达浮层 / 转化条 -->
+      <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; text-align: center; margin-top: 2rem;">
+        <h3 style="margin: 0 0 0.5rem;">准备好体验 {airport.name} 了吗？</h3>
+        <p class="muted" style="margin-bottom: 1.25rem; font-size: 0.92rem;">
+          点击下方按钮直达官网开通，享受高速专线与全区流媒体解锁服务。
+        </p>
+        <a class="btn btn-primary" href={airport.affUrl} target="_blank" rel="nofollow sponsored noopener" style="padding: 0.75rem 2rem; font-size: 1rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
+          直达 {airport.name} 官网 ↗
+        </a>
+      </div>
+    </div>
+  </article>
+</Layout>

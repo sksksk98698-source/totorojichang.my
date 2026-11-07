@@ -8,6 +8,7 @@ const { items, title } = Astro.props;
 
 const isVideo = (src: string) => /\.(mp4|mov|webm|m4v)(\?|$)/i.test(src);
 const thumbOf = (src: string) => {
+  if (src.includes('/speedtests/') || src.includes('/unlocks/')) return src;
   const i = src.lastIndexOf('/');
   return `${src.slice(0, i)}/thumbs${src.slice(i)}`;
 };

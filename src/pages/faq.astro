@@ -1,0 +1,620 @@
+---
+import Layout from '../components/Layout.astro';
+import { withBase, toAbsoluteUrl } from '../data/site';
+
+const canonicalUrl = toAbsoluteUrl('/faq/');
+
+const faqCategories = [
+  { id: 'troubleshooting', name: '网络连接与报错排障', icon: '🔧' },
+  { id: 'protocols', name: '协议与线路技术原理', icon: '⚡' },
+  { id: 'streaming-ai', name: '流媒体与 AI 解锁问答', icon: '🤖' },
+  { id: 'security', name: '安全合规与隐私防范', icon: '🛡️' },
+  { id: 'billing-risk', name: '套餐计费与避坑防割', icon: '💳' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'FAQPage',
+      '@id': `${canonicalUrl}#faq`,
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: '为什么导入机场订阅后，所有节点测速全红超时或显示 1000ms？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '90% 的原因由本地系统时间与网络标准时间不同步引起。现代 TLS 1.3 传输握手对时间精度要求极高，系统误差超过几秒即会被服务端安全拦截。进入系统设置开启“自动同步时间”后重启客户端即可解决；其次排查杀毒软件防火墙拦截、本地 7890 端口被占用、或订阅链接已被运营商 DNS 污染。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'IEPL 内网专线、IPLC 专线与公网中转有什么本质区别？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'IEPL（国际以太网私网专线）和 IPLC 均属于跨国物理隔离管道，数据在境内入口即进入运营商物理光纤直达境外落地，完全不走公网国际出口，因此晚高峰（20:00-24:00）零丢包、不受断流干扰；公网中转则依然在公网上传输加密数据，遇到国际出口拥堵时丢包率会上升至 10%-30%。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '系统代理模式 (System Proxy) 与 TUN 虚拟网卡模式有什么区别？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '系统代理模式仅修改系统的 HTTP/SOCKS 注册表环境变量，只能接管主动读取系统代理的浏览器与常规应用，对命令行终端、外服联机游戏、Steam 平台以及 UWP 应用完全无效；TUN 模式则是在操作系统底层虚拟一张网卡，接管整机全部 TCP 与 UDP 流量，实现真正的全局透明代理解析。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '为什么有的节点能看 YouTube 4K，却完全打不开 ChatGPT 或 Claude？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'YouTube 仅考核纯粹的下载吞吐带宽，对机房 IP 不设防；而 OpenAI 与 Anthropic 部署了极其严苛的 ASN 数据中心过滤、IP 欺诈评级与 WebRTC 指纹检测。如果落地出口使用的是廉价机房 Hosting 广播 IP，欺诈评分过高，就会被 Cloudflare WAF 一刀切拦截报错 1020。必须使用纯净商业原生 ISP 或住宅 IP 才能静默直连。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '使用翻墙机场会不会导致个人网络信息泄露或被机场主偷看密码？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '只要访问的网站是正规 HTTPS 加密（浏览器地址栏带小锁标志），通信内容在您本地设备与目标服务器之间是端到端高强度非对称加密的。机场主只能看到您访问了哪个目标域名（通过 SNI），绝不可能解密您输入的账号密码、聊天记录或交易数据。但切勿随意安装来路不明客户端下发的根证书（CA 证书）。',
+          },
+        },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  title="2026 机场百科与排障 100 问全能手册 · 龙猫机场"
+  description="全网最全的翻墙机场知识百科与技术排障专著：涵盖节点超时全红诊断、TUN 模式配置、IEPL 专线原理、ChatGPT 1020 报错解密、流媒体解锁机制与防封避坑实用问答。"
+  jsonLd={jsonLd}
+>
+  <main class="faq-page">
+    <div class="container">
+      <!-- 页面顶部导航与标题 -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href={withBase('/')}>首页</a>
+        <span class="sep">/</span>
+        <span class="current">机场百科与排障 100 问</span>
+      </nav>
+
+      <header class="faq-header">
+        <div class="badge-faq">
+          <span class="faq-icon">💡</span>
+          <span>专著级知识库 · 工业排障白皮书</span>
+        </div>
+        <h1 class="page-title">机场百科与日常排障 100 问全能手册</h1>
+        <p class="subtitle">
+          汇集数千名真实用户在日常科学上网、大模型办公、跨境出海与流媒体追剧中遇到的高频疑难杂症，从技术底层还原网络机制，提供可直接落地的秒级排障方案。
+        </p>
+      </header>
+
+      <!-- 分类快捷跳转栏 -->
+      <div class="faq-category-nav">
+        {
+          faqCategories.map((cat) => (
+            <a href={`#${cat.id}`} class="category-pill">
+              <span class="cat-icon">{cat.icon}</span>
+              <span>{cat.name}</span>
+            </a>
+          ))
+        }
+      </div>
+
+      <!-- 分类 1：网络连接与报错排障 -->
+      <section id="troubleshooting" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">SECTION 01 · 故障诊断</div>
+          <h2 class="section-heading">🔧 网络连接与报错排障（10 大高频死穴）</h2>
+          <p class="section-lead">导入订阅连不上？网页打不开？按以下步骤 1 分钟快速自检定位：</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>Q1：导入订阅后所有节点测速全红、显示 Timeout 或 1000ms？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【根因】</strong>：90% 是设备系统时间不准。TLS 1.3 强加密握手要求客户端与服务器时钟误差严格在几秒以内，相差过大会被判定为中间人攻击直接断开。
+                <br /><strong>【解决】</strong>：
+                <br />1. Windows/Mac 打开系统设置 ➜ 时间与语言 ➜ 开启“自动设置时间”并点击“立即同步”；
+                <br />2. 检查本地 7890 端口是否被其他软件占用；
+                <br />3. 彻底退出 360 等国产安全卫士，防止其拦截 TUN 虚拟网卡驱动。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Q2：客户端显示连接成功，Google 能打开，但百度、微信全都断网打不开？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【根因】</strong>：错误开启了「Global 全局代理」模式，且使用的节点落地对国内 IP 实施了黑名单拦截，或者本地 DNS 发生劫持。
+                <br /><strong>【解决】</strong>：在客户端（如 Clash Verge Rev）将模式从 <strong>Global（全局）</strong> 切换为 <strong>Rule（规则模式）</strong>。规则模式会自动让国内流量走 <code>DIRECT</code> 本地直连，仅将海外流量走代理。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Q3：关闭代理软件后，电脑彻底无法上网，连微信都登不上？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【根因】</strong>：非正常关闭（或软件崩溃）导致系统代理注册表未被自动还原，系统仍试图把网络流量转发给已关闭的 127.0.0.1:7890 端口。
+                <br /><strong>【解决】</strong>：
+                <br />• Windows：按 Win 键搜索「代理设置」➜ 关闭“使用代理服务器”开关；
+                <br />• 或者重新打开 Clash Verge 客户端，勾选一次“系统代理”后再正常取消勾选退出。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Q4：为什么更新订阅提示 Network Error 或 HTTP 404 / 500？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【根因】</strong>：订阅下发域名遭到当地运营商 DNS 污染拦截，或者机场后台正在更换订阅域名。
+                <br /><strong>【解决】</strong>：先挂上备用热点或节点更新；或者登录机场官网用户中心，重新复制最新的订阅链接，在客户端中粘贴覆盖更新。更多客户端疑难请参阅本站 <a href={withBase('/clients#troubleshooting')}>客户端排障中心</a>。
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 分类 2：协议与线路技术原理 -->
+      <section id="protocols" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">SECTION 02 · 技术底座</div>
+          <h2 class="section-heading">⚡ 协议与线路技术原理科普</h2>
+          <p class="section-lead">IEPL、BGP、VLESS、Trojan... 看懂专线行业名词，不交智商税：</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>Q5：为什么人人都推荐 IEPL 内网专线？它比普通公网中转好在哪里？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【核心区别】</strong>：
+                <br />• <strong>公网中转：</strong> 流量在境内中转机加密后，依然要走中国电信/联通/移动的公共国际出口光缆出海。晚高峰国际出口拥堵时，运营商会执行 QoS 限速，丢包率往往飙升至 10%-30%；
+                <br />• <strong>IEPL 专线：</strong> 采用运营商租售的企业级点对点物理内网专线（如广港 IEPL）。流量在深圳机房直接进内网光纤直达香港机房，<strong>全程物理隔离不走公网出口</strong>，丢包率常年低于 0.1%，高峰期毫无断流感知。详细测速见本站 <a href={withBase('/blog/how-to-choose-reliable-airport-2026/')}>优质机场选购防坑指南</a>。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Q6：Shadowsocks、VLESS、Trojan、Hysteria 2 该选哪种协议？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【适用场景选型】</strong>：
+                <br />• <strong>内网专线环境（IEPL/IPLC）：</strong> 首选 <strong>Shadowsocks 2022</strong> 或 <strong>VLESS</strong>。因为专线本身不经过 GFW，追求极致低握手延迟与高并发吞吐，SS/VLESS 性能损耗最低；
+                <br />• <strong>公网直连或高封锁环境：</strong> 选 <strong>Trojan / VLESS-Reality</strong>。将流量伪装成标准合规的 HTTPS 443 端口，抗主动探测能力最强；
+                <br />• <strong>高丢包恶劣网络（如校园网/偏远地区）：</strong> 选 <strong>Hysteria 2 (基于 UDP QUIC)</strong>，通过主动重传机制强行跑满带宽。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Q7：什么是节点倍率？为什么有的节点标注 0.5x，有的 3.0x？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【倍率机制】</strong>：倍率代表计费系数。您实际消耗的套餐流量 = 真实传输流量 × 节点倍率。
+                <br />• 0.5x 节点：消耗 1GB 真实流量仅扣除 0.5GB 配额（通常是廉价冷门节点）；
+                <br />• 1.0x 节点：标准计费；
+                <br />• 3.0x 节点：消耗 1GB 会扣除 3GB 流量（通常是高成本的原生住宅 IP 或沪美 IPLC 专线）。使用时请注意避免在超高倍率节点上长时间跑 P2P BT 下载。
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 分类 3：流媒体与 AI 解锁问答 -->
+      <section id="streaming-ai" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">SECTION 03 · 生产力与娱乐</div>
+          <h2 class="section-heading">🤖 流媒体追剧与 AI 大模型解锁问答</h2>
+          <p class="section-lead">告别 1020 报错、地区不支持与画质锁定：</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>Q8：访问 ChatGPT 提示“1020 报错”或“地区不支持”，怎么彻底解决？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【排障步骤】</strong>：
+                <br />1. 严禁使用香港节点（OpenAI 与 Claude 官方至今未对香港地区开放）；
+                <br />2. 切换至美国、日本或新加坡带有 `[AI原生]` 标签的专线节点（如 <a href={withBase('/airports/guangsu/')}>光速云</a> 或 <a href={withBase('/airports/muguang/')}>暮光加速</a>）；
+                <br />3. 彻底禁用浏览器 WebRTC 真实 IP 泄漏；
+                <br />4. 新建无痕隐身窗口重新访问。详细配置请参考本站 <a href={withBase('/blog/chatgpt-claude-airport-unlock-guide/')}>2026 AI 时代专线与原生 IP 指南</a>。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Q9：Netflix 只能看非版权自制剧，看不到其他地区限制影片？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【根因】</strong>：当前节点的落地 IP 被 Netflix 识别为机房代理 IP，进入了“半封锁（Proxy Ban）”状态。
+                <br /><strong>【解决】</strong>：优质机场运维会专门部署针对 Netflix 的 DNS 流媒体解锁服务（通过原生家宽做反向代理）。在客户端中切换带有 `[流媒体/NF]` 标识的节点即可恢复全量电影片库。
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 分类 4：安全合规与隐私防范 -->
+      <section id="security" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">SECTION 04 · 安全隐私</div>
+          <h2 class="section-heading">🛡️ 安全合规与隐私防范（安全底线）</h2>
+          <p class="section-lead">机场主能看到我的隐私吗？如何安全使用代理：</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>Q10：机场主或者节点管理员能看到我的账号密码或聊天记录吗？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【不能】</strong>。现代互联网普及了全站 HTTPS 强加密协议（TLS 1.2 / 1.3）。客户端在与目标网站建立通信前已在设备内部完成端到端高强度密钥协商。机场主只能看到目标服务器的 IP 和域名（SNI 报文），<strong>绝不可能解密出您输入的明文密码、银行信息或聊天文本</strong>。前提是切勿安装不明软件强制要求的本地自签名根证书。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Q11：使用翻墙代理有哪些绝对不能触碰的法律与安全红线？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>【自律守则】</strong>：
+                <br />1. 恪守技术学习、学术科研、正常出海跨境办公与合法商业用途；
+                <br />2. 坚决不参与任何政治敏感讨论、不传播谣言；
+                <br />3. 严禁利用代理网络从事黑客攻击、诈骗、侵权盗版等违法犯罪活动；
+                <br />4. 严禁转售、公开传播带有非法性质的个人自建代理给非特定人员。
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 分类 5：套餐计费与避坑防割 -->
+      <section id="billing-risk" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">SECTION 05 · 资金安全</div>
+          <h2 class="section-heading">💳 套餐计费与避坑防割建议</h2>
+          <p class="section-lead">拒绝当韭菜，守护个人资金安全：</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>Q12：为什么强烈建议新手坚持“月付”，不要贪便宜买年付或三年付？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                翻墙代理行业具有天然的政策不确定性与上游机房波动。哪怕历史口碑再好的头部品牌，也可能因突发不可抗力发生网络震荡。<strong>坚持月付（例如每月花费 7-8 元）能将您的资金风险永远控制在个位数</strong>。实测稳定 3 个月以上且有长期固定办公需求，再考虑季付或年付。更多风险防范请参阅本站 <a href={withBase('/risk')}>跑路预警与黑名单档案库</a>。
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 底部站内导航 -->
+      <footer class="faq-matrix-footer">
+        <h3>🧭 龙猫机场全站高可用网络架构导航</h3>
+        <p>构建防封锁、防跑路、抗断流的高可用个人与企业跨境网络：</p>
+        <div class="footer-links-grid">
+          <div class="link-col">
+            <h4>品牌库与专线推荐</h4>
+            <ul>
+              <li><a href={withBase('/airports')}>42 家机场品牌综合知识库</a></li>
+              <li><a href={withBase('/airports/guangsu/')}>光速云 5 年老牌 IEPL 专线</a></li>
+              <li><a href={withBase('/airports/weifeng/')}>微风网络 7元/月 平民平替</a></li>
+              <li><a href={withBase('/airports/muguang/')}>暮光加速 独占原生住宅 IP</a></li>
+            </ul>
+          </div>
+          <div class="link-col">
+            <h4>特色专题与安全雷达</h4>
+            <ul>
+              <li><a href={withBase('/risk')}>🚨 机场跑路预警与黑名单档案库</a></li>
+              <li><a href={withBase('/free')}>🎁 全网免费节点与公益资源库</a></li>
+              <li><a href={withBase('/speedtest')}>机场节点测速与解锁实时观测站</a></li>
+              <li><a href={withBase('/blog/chatgpt-claude-airport-unlock-guide/')}>2026 AI 时代专线与原生 IP 指南</a></li>
+            </ul>
+          </div>
+          <div class="link-col">
+            <h4>客户端与操作手册</h4>
+            <ul>
+              <li><a href={withBase('/clients')}>第三方代理客户端官方下载中心</a></li>
+              <li><a href={withBase('/clients#troubleshooting')}>客户端 10 大节点超时排障图谱</a></li>
+              <li><a href={withBase('/')}>返回龙猫机场首页精选</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .faq-page {
+    padding: 2.5rem 0 5rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #64748b);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-primary, #2563eb);
+  }
+
+  .sep {
+    opacity: 0.5;
+  }
+
+  .current {
+    color: var(--color-text, #0f172a);
+    font-weight: 500;
+  }
+
+  .faq-header {
+    margin-bottom: 2.5rem;
+    max-width: 860px;
+  }
+
+  .badge-faq {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #1d4ed8;
+    margin-bottom: 1rem;
+  }
+
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+  }
+
+  /* 分类快捷导航 */
+  .faq-category-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+  }
+
+  .category-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text, #1e293b);
+    background: var(--color-bg, #ffffff);
+    border: 1px solid var(--color-border, #cbd5e1);
+    padding: 0.45rem 0.9rem;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .category-pill:hover {
+    border-color: var(--color-primary, #2563eb);
+    color: var(--color-primary, #2563eb);
+    transform: translateY(-1px);
+  }
+
+  /* 通用 Section 卡片 */
+  .section-card {
+    background: var(--color-bg, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary, #2563eb);
+    background: rgba(37, 99, 235, 0.08);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-heading {
+    font-size: 1.625rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.015em;
+  }
+
+  .section-lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+    margin-bottom: 2rem;
+    max-width: 900px;
+  }
+
+  /* FAQ 列表 */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .faq-item {
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 10px;
+    padding: 1.25rem;
+    background: var(--color-card-bg, #f8fafc);
+  }
+
+  .faq-question {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-arrow {
+    width: 20px;
+    height: 20px;
+    color: #64748b;
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] .faq-arrow {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    padding-top: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+  }
+
+  .faq-answer p {
+    margin: 0;
+  }
+
+  /* 底部导航 */
+  .faq-matrix-footer {
+    border-top: 2px solid var(--color-border, #e2e8f0);
+    padding-top: 2.5rem;
+    margin-top: 2rem;
+  }
+
+  .faq-matrix-footer h3 {
+    font-size: 1.25rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-matrix-footer > p {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted, #64748b);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+  }
+
+  .link-col h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.75rem;
+  }
+
+  .link-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .link-col a {
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #475569);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .link-col a:hover {
+    color: var(--color-primary, #2563eb);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 1.75rem;
+    }
+    .section-card {
+      padding: 1.5rem 1rem;
+    }
+  }
+</style>

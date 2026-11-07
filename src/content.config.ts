@@ -13,24 +13,10 @@ const blog = defineCollection({
     tags: z.array(z.string()).default([]),
     coverImage: z.string().optional(),
     category: z.enum(['tech', 'life']).default('tech'),
-    author: z.string().default('Rowan Hale'),
+    author: z.string().default('Totoro'),
     mathjax: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
 });
 
-const trips = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/trips' }),
-  schema: z.object({
-    title: z.string(),
-    place: z.string(),
-    date: z.coerce.date(),
-    summary: z.string(),
-    heroImage: z.string(),
-    gallery: z.array(z.string()).default([]),
-    circlePhotos: z.array(z.string()).default([]),
-    highlights: z.array(z.string()).default([]),
-  }),
-});
-
-export const collections = { blog, trips };
+export const collections = { blog };

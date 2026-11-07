@@ -5,10 +5,16 @@ import { site, withBase } from '../data/site';
 <footer class="site-footer">
   <div class="container footer-inner">
     <ul class="footer-links">
-      <li><a href={withBase('/')}>Home</a></li>
-      <li><a href={withBase('/work')}>Work</a></li>
-      <li><a href={withBase('/blog')}>Blog</a></li>
-      <li><a href={withBase('/travel')}>Travel</a></li>
+      <li><a href={withBase('/')}>首页</a></li>
+      <li><a href={withBase('/airports')}>机场品牌库 (42家)</a></li>
+      <li><a href={withBase('/free')}>🎁 免费节点与公益资源</a></li>
+      <li><a href={withBase('/tools')}>🛠️ 梯子工具箱</a></li>
+      <li><a href={withBase('/speedtest')}>测速与解锁实测</a></li>
+      <li><a href={withBase('/clients')}>客户端下载与配置</a></li>
+      <li><a href={withBase('/risk')}>🚨 跑路预警与黑名单</a></li>
+      <li><a href={withBase('/faq')}>💡 机场百科100问</a></li>
+      <li><a href={withBase('/blog')}>深度测评专栏</a></li>
+      <li><a href={withBase('/about')}>关于实验室与方法论</a></li>
     </ul>
     <ul class="footer-links">
       {Object.values(site.socials).map((s) => (
@@ -17,6 +23,9 @@ import { site, withBase } from '../data/site';
         </li>
       ))}
     </ul>
-    <p>© {new Date().getFullYear()} {site.author.name} · {site.author.location}</p>
+    <p class="muted" style="font-size: 0.82rem; margin-top: 1rem; line-height: 1.6;">
+      免责与合规声明：本站测评记录与指标均采自当期实测环境与服务商公开参数，不构成投资或兜底承诺。部分外部注册链接包含赞助推介代码，通过链接注册可能为本站运维带来微薄佣金，且绝不增加用户支付成本。
+    </p>
+    <p style="margin-top: 0.5rem;">© {new Date().getFullYear()} {site.author.name} · totorojichang.my 专线网络实测实验室</p>
   </div>
 </footer>

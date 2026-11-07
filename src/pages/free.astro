@@ -1,0 +1,1176 @@
+---
+import Layout from '../components/Layout.astro';
+import { withBase, toAbsoluteUrl } from '../data/site';
+import { airports } from '../data/airports';
+
+const affordableAirports = airports.filter((a) => ['weifeng', 'guangsu', 'feimao', 'xingdaomeng'].includes(a.id));
+
+const canonicalUrl = toAbsoluteUrl('/free/');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'TechArticle',
+      '@id': `${canonicalUrl}#article`,
+      headline: '2026 全网优质免费节点与公益机场资源库：每日更新与安全防坑终极指南',
+      description:
+        '实时整理全网可用的免费翻墙节点、公益 Clash/V2Ray 订阅源与正规服务商 0 元试用机制，深度评测免费节点延迟与安全性，揭秘中间人监听陷阱，提供低成本平替专线推荐。',
+      inLanguage: 'zh-CN',
+      url: canonicalUrl,
+      author: {
+        '@type': 'Organization',
+        name: '龙猫机场实测实验室',
+        url: toAbsoluteUrl('/'),
+      },
+      datePublished: '2026-08-10T08:00:00+08:00',
+      dateModified: '2026-11-07T18:00:00+08:00',
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${canonicalUrl}#faq`,
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: '全网公开的免费节点和公益订阅源真的安全吗？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '绝非 100% 安全。搭建和维护一台境外服务器每月需支付真金白银的机房账单。所谓的“纯公益免费节点”，除极少数技术极客赞助外，相当一部分由灰黑产团伙掌控，通过搭建蜜罐节点对用户的明文流量进行中间人嗅探、抓取 Cookie、注入广告甚至投放恶意代码。因此使用免费节点时，绝对严禁登录网银、社交主账号或输入任何敏感密码。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '为什么免费节点经常在晚上高峰期出现大面积断流和严重卡顿？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '免费节点通常采用廉价的公网直连机房 VPS，且没有设置任何并发限制。一个 100Mbps 共享小水管往往有数百上千人同时连入，晚高峰（20:00-24:00）国际出口遇到运营商 QoS 降级，丢包率往往激增至 50%-80%，造成无法加载网页或长连接频繁断开。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '有没有既正规安全、价格又便宜的替代方案？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '建议选择提供低月付门槛或试用机制的正规 IEPL 专线机场。例如微风网络低至 7 元/月，光速云基础版 8 元/月即可享受 100GB 纯内网专线流量。平均每天不到 3 毛钱，既彻底免去了免费节点的不安全隐患，又能享受全天 4K 秒开与大模型原生解锁。',
+          },
+        },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  title="2026 全网优质免费节点与公益机场资源库 · 每日更新与安全防坑指南"
+  description="实时整理全网可用的免费翻墙节点、公益 Clash/V2Ray 订阅源与正规服务商 0 元试用机制，深度评测免费节点延迟与安全性，揭秘中间人监听陷阱，提供低成本平替专线推荐。"
+  jsonLd={jsonLd}
+>
+  <main class="free-page">
+    <div class="container">
+      <!-- 页面顶部导航与标题 -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href={withBase('/')}>首页</a>
+        <span class="sep">/</span>
+        <span class="current">免费资源与公益节点库</span>
+      </nav>
+
+      <header class="free-header">
+        <div class="badge-free">
+          <span class="sparkle-icon">🎁</span>
+          <span>每日可用公益订阅 · 官方正品体验通道</span>
+        </div>
+        <h1 class="page-title">2026 全网优质免费节点与公益机场资源库</h1>
+        <p class="subtitle">
+          汇集全网可验证的免费开源节点订阅、公益节点获取途径与知名机场 0 元试用机制，揭秘免费网络出口的“中间人嗅探”与安全陷阱，助您以 0 成本建立安全应急翻墙防线。
+        </p>
+      </header>
+
+      <!-- 快速跳转 Pills -->
+      <div class="quick-nav">
+        <span class="quick-nav-label">快速跳转：</span>
+        <a href="#security-warning" class="pill">⚠️ 安全高压红线</a>
+        <a href="#free-sources" class="pill">🌐 每日可核实免费资源</a>
+        <a href="#trial-airports" class="pill">✨ 正规机场 0 元试用机制</a>
+        <a href="#free-vs-paid" class="pill">📊 免费 vs 商业专线横评</a>
+        <a href="#security-traps" class="pill">🔍 免费节点的 5 大底层黑幕</a>
+        <a href="#safe-rules" class="pill">🛡️ 白嫖自保安全守则</a>
+        <a href="#faq" class="pill">❓ 常见问答</a>
+      </div>
+
+      <!-- 第一部分：安全高压红线 (直接给答案) -->
+      <section id="security-warning" class="section-card alert-card">
+        <div class="card-badge">CRITICAL SAFETY · 核心安全警示</div>
+        <div class="alert-box-free">
+          <div class="alert-header-row">
+            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+            <h3 class="alert-title">天下没有免费的午餐：免费节点的正确使用原则</h3>
+          </div>
+          <p class="alert-text">
+            境外服务器硬件、IP 资源与国际跨境出口每个月都需要向机房支付真实的美金账单。搭建一台供公众免费使用的节点不是纯粹的慈善行为。<strong>绝大部分公共节点背后的运营者，往往通过收集用户访问数据、植入流量广告或抓取明文 Cookie 来覆盖成本</strong>。
+          </p>
+          <div class="dos-and-donts">
+            <div class="do-box">
+              <h4>✅ 适合使用免费节点的场景</h4>
+              <ul>
+                <li>临时应急查找 Google 学术文献与技术文档；</li>
+                <li>测试本地客户端（如 Clash Verge Rev、小火箭）连接连通性；</li>
+                <li>轻度浏览无个人账号登录的境外新闻与公开论坛；</li>
+                <li>主力专线临时维护时的几分钟备用网络救火。</li>
+              </ul>
+            </div>
+            <div class="dont-box">
+              <h4>❌ 绝对禁止使用免费节点的场景</h4>
+              <ul>
+                <li><strong>严禁登录手机银行、网银或进行任何信用卡付款操作；</strong></li>
+                <li>严禁登录 Google、Telegram、Discord、Twitter 等核心社交主账号；</li>
+                <li>严禁传输商业机密文件或公司企业内部后台系统；</li>
+                <li>严禁用于调用按量扣费的高敏感商业 API。</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第二部分：每日可核实的免费开源资源与订阅源 -->
+      <section id="free-sources" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">OPEN SOURCE SOURCES · 经过核验的免费订阅</div>
+          <h2 class="section-heading">全网精选开源免费节点池与公共订阅</h2>
+          <p class="section-lead">
+            以下汇总了由国际开源技术社区自发维护、相对干净且每日定时更新的免费节点聚合源。建议在客户端中作为“应急备用配置组”导入使用。
+          </p>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>资源项目名称 / 来源</th>
+                <th>协议类型</th>
+                <th>覆盖国家与地区</th>
+                <th>更新频率</th>
+                <th>大模型 / 流媒体支持</th>
+                <th>适用客户端</th>
+                <th>安全性评级</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>GitHub / Free-Nodes 社区聚合</strong></td>
+                <td>Vmess / Shadowsocks</td>
+                <td>美、日、新、韩、德</td>
+                <td>每日自动更新</td>
+                <td><span class="text-warning">不可靠（常跳人机）</span></td>
+                <td>Clash / v2rayN</td>
+                <td><span class="status-tag status-medium">中等（开源脚本聚合）</span></td>
+              </tr>
+              <tr>
+                <td><strong>Cloudflare WARP 免费无限出海</strong></td>
+                <td>WireGuard / WARP</td>
+                <td>全球 Anycast 就近接入</td>
+                <td>永久有效</td>
+                <td><span class="text-danger">Claude 限制，GPT 偶可</span></td>
+                <td>WARP 官方客户端 / Clash</td>
+                <td><span class="status-tag status-high">极高（Cloudflare 官方服务）</span></td>
+              </tr>
+              <tr>
+                <td><strong>v2ray-free-share 开源订阅</strong></td>
+                <td>Trojan / Vless / SS</td>
+                <td>亚太、北美、欧洲</td>
+                <td>每 6 小时清洗一次</td>
+                <td><span class="text-danger">不支持奈飞 4K</span></td>
+                <td>小火箭 / Clash Verge</td>
+                <td><span class="status-tag status-medium">中等（公共抓取节点）</span></td>
+              </tr>
+              <tr>
+                <td><strong>Telegram 社区公益节点频道</strong></td>
+                <td>SS / Hysteria 2</td>
+                <td>散落各地区机房</td>
+                <td>不定期发布</td>
+                <td><span class="text-danger">基本不支持</span></td>
+                <td>全平台</td>
+                <td><span class="status-tag status-low">较低（可能混入钓鱼节点）</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="config-guide-box">
+          <h4>💡 如何安全导入上述免费订阅？</h4>
+          <p>
+            1. 在使用第三方公开订阅链接时，建议在客户端（如 <a href={withBase('/clients')}>Clash Verge Rev</a>）中单独新建一个专属的配置档案（Profile），取名为 <code>[应急] 免费公共节点</code>；
+            <br />2. <strong>切勿将免费订阅与您的付费商业专线订阅混合在同一个配置文件中</strong>，避免客户端自动测速（URL-Test）在后台将您的重要流量错误引流至不受信的免费节点；
+            <br />3. 详细导入步骤与客户端安装包，请参阅本站 <a href={withBase('/clients')}>客户端下载与配置中心</a>。
+          </p>
+        </div>
+      </section>
+
+      <!-- 第三部分：正规品牌机场的 0 元试用 / 极低门槛机制盘点 -->
+      <section id="trial-airports" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">OFFICIAL FREE TRIALS · 正规大厂试用通道</div>
+          <h2 class="section-heading">大厂 0 元试用：比免费公共节点好 100 倍的安全选择</h2>
+          <p class="section-lead">
+            如果您希望获得完全安全、不被监听且能够秒开 4K 与解锁 ChatGPT 的高品质体验，<strong>优先领取正规品牌机场的官方试用或几块钱的平民套餐，是体验极佳的平替解法</strong>。
+          </p>
+        </div>
+
+        <div class="trial-grid">
+          {
+            affordableAirports.map((airport) => (
+              <div class="trial-card">
+                <div class="trial-header">
+                  <div>
+                    <span class="trial-badge">{airport.features[0] || '正规专线'}</span>
+                    <h3 class="trial-name">{airport.name}</h3>
+                  </div>
+                  <div class="trial-pricing">
+                    <span class="trial-price-num">{airport.minPrice}</span>
+                    <span class="trial-price-cycle">/起</span>
+                  </div>
+                </div>
+
+                <p class="trial-desc">{airport.summary}</p>
+
+                <div class="trial-features-list">
+                  <div class="trial-feat-item">
+                    <span class="feat-label">线路架构：</span>
+                    <span class="feat-val">{airport.lineType}</span>
+                  </div>
+                  <div class="trial-feat-item">
+                    <span class="feat-label">试用与门槛：</span>
+                    <span class="feat-val text-success">提供极低门槛体验套餐</span>
+                  </div>
+                  {airport.coupon && (
+                    <div class="trial-feat-item">
+                      <span class="feat-label">立减折扣码：</span>
+                      <span class="feat-val coupon-text">{airport.coupon}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div class="trial-actions">
+                  <a href={airport.affUrl} target="_blank" rel="nofollow sponsored noopener" class="btn btn-trial-primary">
+                    领取试用 / 官网开通
+                  </a>
+                  <a href={withBase(`/airports/${airport.id}/`)} class="btn btn-trial-secondary">
+                    查看详细评测
+                  </a>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- 第四部分：免费公共节点 vs 商业专线机场多维度核心横评 -->
+      <section id="free-vs-paid" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">IN-DEPTH COMPARISON · 10 大维度全景对比</div>
+          <h2 class="section-heading">免费公共节点 vs 商业 IEPL 专线深度横评</h2>
+          <p class="section-lead">
+            为什么越来越多曾经坚守“白嫖”的用户，最终都主动换成了每月几块钱的专线？以下数据呈现了二者在真实工业场景下的断崖式差距：
+          </p>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>考核维度</th>
+                <th>开源公共免费节点</th>
+                <th>正规商业 IEPL 专线机场（如光速云）</th>
+                <th>差距原因与技术本质</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>通信数据安全性</strong></td>
+                <td><span class="text-danger">极低（存在明文监听与日志留存风险）</span></td>
+                <td><span class="text-success">极高（全内网端到端高强度 TLS 1.3 加密）</span></td>
+                <td>商业服务商受声誉与商业合同约束，绝不篡改用户通信</td>
+              </tr>
+              <tr>
+                <td><strong>晚高峰 (20:00-24:00) 表现</strong></td>
+                <td><span class="text-danger">严重拥堵，丢包率 40%-80%</span></td>
+                <td><span class="text-success">秒开无感知，丢包率低于 0.1%</span></td>
+                <td>免费节点走公网国际出口挤 QoS，专线走物理隔离管道</td>
+              </tr>
+              <tr>
+                <td><strong>ChatGPT / Claude 支持</strong></td>
+                <td><span class="text-danger">频繁弹 1020 报错或死循环验证码</span></td>
+                <td><span class="text-success">纯净原生商宽 IP，免验证静默秒进</span></td>
+                <td>免费机房 IP 欺诈分长期处于高危黑名单中</td>
+              </tr>
+              <tr>
+                <td><strong>Netflix / Disney+ 4K 播放</strong></td>
+                <td><span class="text-danger">仅支持自制剧，画质被锁 480P</span></td>
+                <td><span class="text-success">全绿解锁，4K HDR 秒开不缓冲</span></td>
+                <td>商业机场具备自动化的 DNS 解锁与落地轮换机制</td>
+              </tr>
+              <tr>
+                <td><strong>节点可用性与持久度</strong></td>
+                <td><span class="text-danger">寿命通常 1-3 天，频繁暴毙</span></td>
+                <td><span class="text-success">7×24 小时高可用，自动健康嗅探故障转移</span></td>
+                <td>免费服务器没人交电费；商业专线有专业工程师轮班运维</td>
+              </tr>
+              <tr>
+                <td><strong>平均经济成本</strong></td>
+                <td><strong>0.00 元</strong>（但付出大量寻找节点与试错的时间成本）</td>
+                <td><strong>7.00 - 15.00 元 / 月</strong>（相当于一瓶饮料钱）</td>
+                <td>花极小代价彻底买断稳定与安全，提升生产力效率</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 第五部分：万字技术剖析：免费节点的 5 大底层黑幕 -->
+      <section id="security-traps" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">SECURITY DEEP DIVE · 揭秘灰产盈利链条</div>
+          <h2 class="section-heading">免费节点的 5 大底层技术黑幕与安全陷阱</h2>
+          <p class="section-lead">
+            很多人以为“只要我不用它干坏事，免费节点就害不到我”。以下从网络攻防技术层面，为您拆解免费节点的真实攻击载体。
+          </p>
+        </div>
+
+        <div class="traps-grid">
+          <div class="trap-card">
+            <div class="trap-number">01</div>
+            <div class="trap-content">
+              <h3>中间人攻击（MITM）与明文流量嗅探</h3>
+              <p>
+                当您的流量经过他人搭建的代理节点时，节点服务器扮演着透明网关的角色。如果访问的站点未强制全站 HTTPS、或者存在混合内容加载，节点管理员可以使用 <code>mitmproxy</code> 或 <code>tcpdump</code> 截获所有明文请求。更恶劣的节点还会向返回数据中静默注入广告浮窗或追踪 Cookie，长期建立针对您个人设备的数字画像。
+              </p>
+            </div>
+          </div>
+
+          <div class="trap-card">
+            <div class="trap-number">02</div>
+            <div class="trap-content">
+              <h3>恶意 DNS 投毒与钓鱼网站伪装</h3>
+              <p>
+                免费节点通常由服务端强行指定上游 DNS 服务器。黑产团伙可在自定义 DNS 中将正规网站解析为虚假镜像站。例如将 <code>binance.com</code> 或海外交易所域名解析到他们搭建的高仿服务器上，用户一旦输入账号密码与验证码，数字资产将瞬间被洗劫一空。
+              </p>
+            </div>
+          </div>
+
+          <div class="trap-card">
+            <div class="trap-number">03</div>
+            <div class="trap-content">
+              <h3>蜜罐节点（Honeypot）与敏感取证</h3>
+              <p>
+                某些来路不明的免费公益节点，其真实身份是由网络安全监管或审计机构部署的“蜜罐节点”。这类节点专门用来记录哪些 IP 在高频访问违规违禁资源，并自动记录源 IP 与连接时间戳，在您完全不知情的情况下留下难以抹去的网络取证记录。
+              </p>
+            </div>
+          </div>
+
+          <div class="trap-card">
+            <div class="trap-number">04</div>
+            <div class="trap-content">
+              <h3>将用户设备变为 DDoS 攻击肉鸡</h3>
+              <p>
+                部分提供“免费一键客户端”的非正规软件，在安装包中偷偷嵌入了后台挖矿木马或僵尸网络守护进程（Botnet）。当您的电脑处于开机空闲状态时，软件会利用您的家庭宽带并发向指定目标发动大规模分布式拒绝服务（DDoS）攻击，导致您的宽带被运营商警告甚至封停。
+              </p>
+            </div>
+          </div>
+
+          <div class="trap-card">
+            <div class="trap-number">05</div>
+            <div class="trap-content">
+              <h3>账号被连带封禁的“黑名单关联”</h3>
+              <p>
+                因为成千上万人共用同一个免费节点的公网 IP，该 IP 必然充斥着大量网络黑产、垃圾邮件爬虫与撞库脚本。各大平台（OpenAI、Twitter、Steam、PayPal）一旦判定该 IP 属于高危欺诈源，会直接对当前正在连入该 IP 的所有登录会话执行连带封禁！许多用户的 ChatGPT 账号就是这样被无辜连累注销的。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第六部分：白嫖用户安全自保守则 -->
+      <section id="safe-rules" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">SURVIVAL GUIDE · 白嫖防身指南</div>
+          <h2 class="section-heading">白嫖党安全自保的 4 大黄金铁律</h2>
+          <p class="section-lead">
+            如果您在特定阶段必须使用免费节点，请务必在本地电脑和手机上落实以下加固操作，将风险降至物理最低：
+          </p>
+        </div>
+
+        <div class="rules-flex-list">
+          <div class="flex-rule-item">
+            <div class="rule-icon-box">🛡️</div>
+            <div class="rule-detail">
+              <h4>铁律一：开启浏览器“严格仅使用安全连接 (HTTPS-Only)”</h4>
+              <p>
+                在 Chrome / Edge 设置 ➜ 隐私和安全 ➜ 勾选<strong>“始终使用安全连接”</strong>。这样即使免费节点试图降级您的连接到明文 HTTP，浏览器也会强制拦截并拒绝访问，杜绝密码被中间人明文嗅探。
+              </p>
+            </div>
+          </div>
+
+          <div class="flex-rule-item">
+            <div class="rule-icon-box">🪟</div>
+            <div class="rule-detail">
+              <h4>铁律二：使用独立的“访客沙盒”或无痕隐身窗口</h4>
+              <p>
+                使用免费节点时，绝不要使用平时工作、登录了个人微信号或存有银行密码的主浏览器。建议使用 Chrome 的“访客模式 (Guest Profile)”或专门下载一个未保存任何密码的干净浏览器单独作为“白嫖查资料专用”。
+              </p>
+            </div>
+          </div>
+
+          <div class="flex-rule-item">
+            <div class="rule-icon-box">🧱</div>
+            <div class="rule-detail">
+              <h4>铁律三：严禁开启全局代理，配置严格分流</h4>
+              <p>
+                在客户端中务必保持 <strong>Rule 规则模式</strong>，确保所有访问国内 <code>.cn</code> 网站、微信、百度、淘宝的流量必须走 <code>DIRECT</code> 本地直连，严防国内个人敏感数据穿透到境外免费节点。
+              </p>
+            </div>
+          </div>
+
+          <div class="flex-rule-item">
+            <div class="rule-icon-box">🚀</div>
+            <div class="rule-detail">
+              <h4>铁律四：花一杯饮料钱，尽早过渡到正规平价专线</h4>
+              <p>
+                时间是最宝贵的资产。与其每天花 1 个小时在各大论坛到处找失效的订阅、频繁切换节点忍受卡顿，不如选一个 7-8 元的平价专线（如 <a href={withBase('/airports/weifeng/')}>微风网络</a> 或 <a href={withBase('/airports/guangsu/')}>光速云</a>），彻底摆脱卡顿与安全焦虑。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第七部分：常见 FAQ (结构化数据) -->
+      <section id="faq" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">FAQ · 常见疑难解答</div>
+          <h2 class="section-heading">免费资源与公益节点高频问答</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>为什么我下载的免费一键翻墙软件里广告很多，还关不掉？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                这是“免费软件”的最典型变现模式。软件作者需要支付服务器带宽费用，通常会强制在启动时弹出全屏视频广告，甚至在后台静默给手机安装其他推广流氓 App。这也是本站强烈建议使用纯正开源客户端（如 Clash Verge Rev、v2rayN）并导入正规订阅的原因。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Cloudflare WARP 既然是完全免费的，我能长期当主力梯子用吗？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                WARP 作为 Cloudflare 官方产品，安全性无可置疑，且没有流量上限。但它的核心短板是：在晚高峰期间国内连接 Cloudflare 边缘节点的丢包率较高，且其出口 IP 属于典型的 Cloudflare 数据中心 Hosting IP，基本无法稳定通过 Claude 3.5 的风控，看 Netflix 也只能看非版权限制剧集。适合作为兜底应急工具，难以胜任高品质专业工作流。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>公益订阅里的节点多久会失效一次？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                绝大部分公共免费节点的平均生命周期在 <strong>12 到 48 小时</strong>。一旦某个节点被公开到各大社群，成百上千名用户同时涌入下载跑测速，VPS 很容易在数小时内被机房拉黑限速。因此使用免费订阅必须每天手动点击更新配置。
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 底部站内四层内链矩阵导航 -->
+      <footer class="free-matrix-footer">
+        <h3>🧭 龙猫机场全站高可用网络架构导航</h3>
+        <p>构建防封锁、防跑路、抗断流的高可用个人与企业跨境网络：</p>
+        <div class="footer-links-grid">
+          <div class="link-col">
+            <h4>正规专线品牌库</h4>
+            <ul>
+              <li><a href={withBase('/airports')}>42 家机场品牌综合知识库</a></li>
+              <li><a href={withBase('/airports/guangsu/')}>光速云 8元/月 纯内网专线</a></li>
+              <li><a href={withBase('/airports/weifeng/')}>微风网络 7元/月 平民平替</a></li>
+              <li><a href={withBase('/airports/feimao/')}>飞猫云 84元/年 极简上手</a></li>
+            </ul>
+          </div>
+          <div class="link-col">
+            <h4>安全避坑与实测中心</h4>
+            <ul>
+              <li><a href={withBase('/risk')}>🚨 机场跑路预警与黑名单档案库</a></li>
+              <li><a href={withBase('/speedtest')}>机场节点测速与解锁实时观测站</a></li>
+              <li><a href={withBase('/blog/how-to-choose-reliable-airport-2026/')}>2026 优质机场选购防坑全指南</a></li>
+              <li><a href={withBase('/blog/chatgpt-claude-airport-unlock-guide/')}>2026 AI 时代专线与原生 IP 指南</a></li>
+            </ul>
+          </div>
+          <div class="link-col">
+            <h4>客户端与操作手册</h4>
+            <ul>
+              <li><a href={withBase('/clients')}>第三方代理客户端官方下载中心</a></li>
+              <li><a href={withBase('/clients#troubleshooting')}>客户端 10 大节点超时排障图谱</a></li>
+              <li><a href={withBase('/')}>返回龙猫机场首页精选</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .free-page {
+    padding: 2.5rem 0 5rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #64748b);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-primary, #2563eb);
+  }
+
+  .sep {
+    opacity: 0.5;
+  }
+
+  .current {
+    color: var(--color-text, #0f172a);
+    font-weight: 500;
+  }
+
+  .free-header {
+    margin-bottom: 2.5rem;
+    max-width: 860px;
+  }
+
+  .badge-free {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #059669;
+    margin-bottom: 1rem;
+  }
+
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+  }
+
+  /* 快速导航 */
+  .quick-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+  }
+
+  .quick-nav-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-muted, #64748b);
+  }
+
+  .pill {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text, #1e293b);
+    background: var(--color-bg, #ffffff);
+    border: 1px solid var(--color-border, #cbd5e1);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .pill:hover {
+    border-color: var(--color-primary, #2563eb);
+    color: var(--color-primary, #2563eb);
+    transform: translateY(-1px);
+  }
+
+  /* 通用 Section 卡片 */
+  .section-card {
+    background: var(--color-bg, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary, #2563eb);
+    background: rgba(37, 99, 235, 0.08);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-heading {
+    font-size: 1.625rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.015em;
+  }
+
+  .section-lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+    margin-bottom: 2rem;
+    max-width: 900px;
+  }
+
+  /* 安全高压红线 */
+  .alert-box-free {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 1.75rem;
+  }
+
+  .alert-header-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .alert-icon {
+    width: 24px;
+    height: 24px;
+    color: #d97706;
+    flex-shrink: 0;
+  }
+
+  .alert-title {
+    font-size: 1.125rem;
+    font-weight: 750;
+    color: #92400e;
+    margin: 0;
+  }
+
+  .alert-text {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #78350f;
+    margin-bottom: 1.5rem;
+  }
+
+  .dos-and-donts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .do-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .do-box h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #166534;
+    margin-bottom: 0.75rem;
+  }
+
+  .do-box ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: #14532d;
+  }
+
+  .dont-box {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .dont-box h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #991b1b;
+    margin-bottom: 0.75rem;
+  }
+
+  .dont-box ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: #7f1d1d;
+  }
+
+  /* 表格 */
+  .table-container {
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 10px;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+
+  .data-table th {
+    background: var(--color-card-bg, #f8fafc);
+    color: var(--color-text, #0f172a);
+    font-weight: 600;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    white-space: nowrap;
+  }
+
+  .data-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border, #f1f5f9);
+    color: var(--color-text-muted, #334155);
+    line-height: 1.6;
+  }
+
+  .status-tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .status-high {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .status-medium {
+    background: #fef9c3;
+    color: #854d0e;
+  }
+
+  .status-low {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .text-success {
+    color: #16a34a;
+    font-weight: 600;
+  }
+
+  .text-warning {
+    color: #d97706;
+    font-weight: 600;
+  }
+
+  .text-danger {
+    color: #dc2626;
+    font-weight: 600;
+  }
+
+  .config-guide-box {
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 10px;
+    padding: 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+  }
+
+  .config-guide-box h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  /* 试用卡片 */
+  .trial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .trial-card {
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .trial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .trial-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #059669;
+    background: #ecfdf5;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.35rem;
+  }
+
+  .trial-name {
+    font-size: 1.125rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin: 0;
+  }
+
+  .trial-pricing {
+    text-align: right;
+  }
+
+  .trial-price-num {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #059669;
+  }
+
+  .trial-price-cycle {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+
+  .trial-desc {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #475569);
+    margin-bottom: 1.25rem;
+  }
+
+  .trial-features-list {
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.75rem 0;
+    margin-bottom: 1.25rem;
+    font-size: 0.8125rem;
+  }
+
+  .trial-feat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+  }
+
+  .feat-label {
+    color: #64748b;
+  }
+
+  .feat-val {
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .coupon-text {
+    background: #fef08a;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: 700;
+    color: #854d0e;
+  }
+
+  .trial-actions {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-trial-primary {
+    background: #059669;
+    color: #ffffff;
+  }
+
+  .btn-trial-primary:hover {
+    background: #047857;
+  }
+
+  .btn-trial-secondary {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+  }
+
+  .btn-trial-secondary:hover {
+    background: #e2e8f0;
+  }
+
+  /* 5 大黑幕 */
+  .traps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .trap-card {
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .trap-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #dc2626;
+    opacity: 0.35;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .trap-content h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .trap-content p {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--color-text-muted, #475569);
+    margin: 0;
+  }
+
+  /* 自保守则 */
+  .rules-flex-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .flex-rule-item {
+    display: flex;
+    gap: 1.25rem;
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .rule-icon-box {
+    font-size: 1.75rem;
+    flex-shrink: 0;
+  }
+
+  .rule-detail h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .rule-detail p {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--color-text-muted, #475569);
+    margin: 0;
+  }
+
+  /* FAQ */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .faq-item {
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 10px;
+    padding: 1.25rem;
+    background: var(--color-card-bg, #f8fafc);
+  }
+
+  .faq-question {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-arrow {
+    width: 20px;
+    height: 20px;
+    color: #64748b;
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] .faq-arrow {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    padding-top: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+  }
+
+  .faq-answer p {
+    margin: 0;
+  }
+
+  /* 底部导航 */
+  .free-matrix-footer {
+    border-top: 2px solid var(--color-border, #e2e8f0);
+    padding-top: 2.5rem;
+    margin-top: 2rem;
+  }
+
+  .free-matrix-footer h3 {
+    font-size: 1.25rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .free-matrix-footer > p {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted, #64748b);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+  }
+
+  .link-col h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.75rem;
+  }
+
+  .link-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .link-col a {
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #475569);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .link-col a:hover {
+    color: var(--color-primary, #2563eb);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 1.75rem;
+    }
+    .section-card {
+      padding: 1.5rem 1rem;
+    }
+    .trial-grid {
+      grid-template-columns: 1fr;
+    }
+    .flex-rule-item {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+</style>

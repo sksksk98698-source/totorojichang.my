@@ -1,0 +1,23 @@
+# robots.txt for https://totorojichang.my
+User-agent: *
+Allow: /
+
+# Google 搜索爬虫
+User-agent: Googlebot
+Allow: /
+
+# Bing 搜索爬虫
+User-agent: bingbot
+Allow: /
+
+# 百度搜索爬虫
+User-agent: Baiduspider
+Allow: /
+
+# 神马搜索 / 夸克 / UC 爬虫
+User-agent: yisouspider
+Allow: /
+
+# Sitemap 声明
+Sitemap: https://totorojichang.my/sitemap-index.xml
+Sitemap: https://totorojichang.my/sitemap.xml

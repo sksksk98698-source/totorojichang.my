@@ -18,52 +18,56 @@ export interface SocialLink {
 
 /**
  * ─────────────────────────────────────────────────────────────
- *  Site identity — the one file you must edit first.
- *  Everything on the site (titles, meta tags, footer, hero
- *  social links) reads from here.
+ *  Site identity — 龙猫机场 (totorojichang.my)
  * ─────────────────────────────────────────────────────────────
  */
 export const site = {
-  /** Your full name — used for <title> and meta tags */
-  title: 'Rowan Hale',
-  /** Short handle used after the dot in page titles ("About · rowanhale") */
-  shortTitle: 'rowanhale',
-  /** Default meta description for pages that don't set their own */
+  title: '龙猫机场 · 全网 42 家机场评测与专线测速实验室',
+  shortTitle: '龙猫机场',
   description:
-    'Software engineer and occasional traveler — writing about code and sharing photos from the road.',
-  /** Your production URL — no trailing slash. Used for canonical URLs, OG tags, RSS and sitemap */
-  url: 'https://example.com',
+    '专注 2026 全球机场网络测速、IEPL/IPLC 专线稳定性实测、ChatGPT/流媒体全区解锁矩阵与第三方代理客户端配置指南。真实晚高峰数据，拒绝虚假营销。',
+  url: 'https://totorojichang.my',
   author: {
-    name: 'Rowan Hale',
-    email: 'hello@example.com',
-    location: 'Portland, OR',
-    /** Optional: link to a PDF résumé served from /public */
-    resume: '/resume/Resume.pdf',
+    name: '龙猫机场',
+    email: 'contact@totorojichang.my',
+    location: 'Tokyo / Global Edge',
+    resume: '/airports',
   },
-  /** Shown in the hero and footer. Delete a line to remove it from both places.
-   *  `icon` is any name from src/components/Icon.astro */
   socials: {
-    github: { url: 'https://github.com', label: 'GitHub', icon: 'github' },
-    linkedin: { url: 'https://www.linkedin.com', label: 'LinkedIn', icon: 'linkedin' },
-    instagram: { url: 'https://www.instagram.com', label: 'Instagram', icon: 'instagram' },
-    email: { url: 'mailto:hello@example.com', label: 'Email', icon: 'email' },
-    rss: { url: '/rss.xml', label: 'RSS', icon: 'rss' },
+    airports: { url: '/airports', label: '机场品牌库', icon: 'arrow-right' },
+    speedtest: { url: '/speedtest', label: '实测大图', icon: 'arrow-right' },
+    rss: { url: '/rss.xml', label: 'RSS 订阅', icon: 'rss' },
   } satisfies Record<string, SocialLink>,
+  /** 搜索引擎站长平台所有权验证 Meta 预留插槽 */
+  verification: {
+    google: '', // Google Search Console 验证代码
+    bing: '', // Bing Webmaster Tools msvalidate.01
+    baidu: '', // 百度搜索资源平台 baidu-site-verification
+    shenma: '', // 神马站长平台 shenma-site-verification
+  },
 };
 
 export type SocialKey = keyof typeof site.socials;
 
 /**
- * Prefix a root-relative path ("/img/x.jpg") with the configured base
- * path (`base` in astro.config.mjs). Anything else — external URLs,
- * mailto:/tel: links, already-prefixed paths — passes through
- * untouched. Use it for every internal link and public/ asset so the
- * site works at a subpath (e.g. GitHub Pages project sites) as well as
- * at the domain root.
+ * Prefix a root-relative path with the configured base path.
  */
 export const withBase = (path: string): string => {
-  const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+  if (!path) return '';
   if (!path.startsWith('/')) return path;
-  if (path.startsWith(`${base}/`)) return path;
+  const rawBase = import.meta.env.BASE_URL ?? '/';
+  const base = rawBase === '/' ? '' : rawBase.replace(/\/+$/, '');
+  if (!base) return path;
+  if (path === base || path.startsWith(`${base}/`)) return path;
   return `${base}${path}`;
+};
+
+/**
+ * Resolve a relative or root-relative path to a full canonical absolute URL.
+ */
+export const toAbsoluteUrl = (path: string): string => {
+  if (!path) return site.url;
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  const resolvedPath = withBase(path);
+  return `${site.url.replace(/\/+$/, '')}/${resolvedPath.replace(/^\/+/, '')}`;
 };

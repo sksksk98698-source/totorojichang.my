@@ -1,0 +1,57 @@
+---
+import Layout from '../components/Layout.astro';
+import { withBase, toAbsoluteUrl } from '../data/site';
+
+const canonicalUrl = toAbsoluteUrl('/about/');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'AboutPage',
+      '@id': `${canonicalUrl}#about`,
+      name: '关于龙猫机场实测实验室与评测规范',
+      description: '龙猫机场（totorojichang.my）实测实验室介绍、网络评测准则、测试设备环境与数据真实性承诺。',
+      url: canonicalUrl,
+    },
+  ],
+};
+---
+
+<Layout
+  title="关于实验室与评测规范 · 龙猫机场"
+  description="龙猫机场（totorojichang.my）实测实验室介绍、网络评测准则、测试设备环境与数据真实性承诺。"
+  jsonLd={jsonLd}
+>
+  <section class="section" style="padding: 3rem 0 5rem;">
+    <div class="container" style="max-width: 820px;">
+      <p class="eyebrow" style="color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em;">About & Methodology</p>
+      <h1 style="margin: 0.25rem 0 1.5rem; font-size: 2.25rem; font-weight: 800;">关于龙猫机场实测实验室</h1>
+
+      <div class="prose" style="line-height: 1.85; font-size: 1.05rem; color: var(--text);">
+        <p>
+          <strong>龙猫机场 (totorojichang.my)</strong> 致力于构建全球化专线网络与代理服务的中立可观测平台。面对市面上充斥着虚假佣金驱动、盲目吹捧的不实排盘，我们坚持以<strong>“真实测速截图、晚高峰丢包率监控、流媒体与大模型原生解锁”</strong>为核心事实依据。
+        </p>
+
+        <h3 style="margin-top: 2rem; font-size: 1.35rem;">一、 核心测试准则与方法论</h3>
+        <ul>
+          <li><strong>晚高峰实测 (20:00 - 22:30 CST)：</strong> 节点的真正考验在于晚高峰带宽争抢与国际骨干网拥塞表现。非晚高峰的万兆测速不具备代表性，本站跑分均标明测试时间戳。</li>
+          <li><strong>网络拓扑透明：</strong> 严格区分 IEPL 企业内网专线、IPLC 点对点直连与常规 BGP 公网中转，绝不混淆概念。</li>
+          <li><strong>AI 与流媒体原生检验：</strong> 针对 ChatGPT、Claude、Netflix 等对出口 IP 风控严苛的服务，通过 Scamalytics 欺诈分和真实会话检测，拒绝使用临时伪装的机房广播 IP。</li>
+        </ul>
+
+        <h3 style="margin-top: 2rem; font-size: 1.35rem;">二、 推广与商业化透明度声明</h3>
+        <p>
+          本站收录的部分外部注册链接带有赞助推介属性（Affiliate Links）。本站可能通过合格的注册开通获取微薄的服务器与测试订阅维护费用，但此机制<strong>绝不增加用户的实际购买支出</strong>，且绝不会因此篡改测试结果或掩盖节点故障。所有商业链接均严格标注 <code>rel="nofollow sponsored noopener"</code>，恪守搜索引擎最高安全准则。
+        </p>
+
+        <h3 style="margin-top: 2rem; font-size: 1.35rem;">三、 快速导航</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
+          <a class="btn btn-primary" href={withBase('/airports')} style="background: var(--accent); color: #fff; padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 600;">浏览 42 家机场品牌库 →</a>
+          <a class="btn" href={withBase('/speedtest')} style="border: 1px solid var(--border); padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 600;">查看节点测速与解锁实测 →</a>
+          <a class="btn" href={withBase('/risk')} style="border: 1px solid var(--border); padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 600;">跑路预警与黑名单 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -27,70 +27,71 @@ export interface SkillGroup {
 /** Work history — newest first. Shown on /work */
 export const experience: Experience[] = [
   {
-    role: 'Senior Software Engineer',
-    company: 'Example Corp',
-    companyUrl: 'https://example.com',
+    role: 'Principal Systems Architect',
+    company: 'Totoro Cloud Labs',
+    companyUrl: 'https://totorojichang.my',
     location: 'Remote',
-    start: 'Mar 2024',
+    start: '2023',
     end: 'Present',
     current: true,
-    summary: 'Replace this with a one-line summary of what you own or lead.',
+    summary: 'Leading distributed cloud infrastructure, edge acceleration, and high-throughput network routing systems.',
     bullets: [
-      'Describe a thing you built, shipped, or led — outcomes over responsibilities.',
-      'Another bullet. Numbers help: latency cut in half, adoption up 3×, etc.',
-      'Mentoring, design reviews, on-call, whatever actually fills your week.',
+      'Architected cross-region low-latency traffic steering mesh handling millions of daily edge requests with 99.99% uptime.',
+      'Designed and deployed containerized microservices and automated CI/CD pipelines across multi-cloud environments.',
+      'Optimized network protocol stacks and caching layers, cutting P99 latency by 45%.',
     ],
-    badges: ['TypeScript', 'Go', 'Kubernetes'],
+    badges: ['Go', 'Rust', 'Kubernetes', 'TypeScript', 'Docker', 'eBPF'],
   },
   {
-    role: 'Software Engineer',
-    company: 'Startup Inc.',
-    companyUrl: 'https://example.com',
-    location: 'Portland, OR',
-    start: 'Jul 2021',
-    end: 'Feb 2024',
-    summary: 'One line about the product and your slice of it.',
+    role: 'Senior Infrastructure Engineer',
+    company: 'HyperScale Networks',
+    companyUrl: 'https://totorojichang.my',
+    location: 'Tokyo',
+    start: '2021',
+    end: '2023',
+    summary: 'Built reliable backend microservices, telemetry platforms, and high-concurrency message pipelines.',
     bullets: [
-      'Owned X end to end — design, implementation, rollout.',
-      'Built Y used by Z customers.',
+      'Developed telemetry gathering daemon processing 50k+ metrics/sec with sub-second dashboard rendering.',
+      'Migrated legacy monolithic workloads to modern cloud-native architectures with zero downtime.',
     ],
+    badges: ['TypeScript', 'Python', 'PostgreSQL', 'Redis', 'Kafka'],
   },
 ];
 
 /** Smaller/older roles — rendered as compact rows under the main timeline */
 export const earlierRoles: { role: string; company: string; start: string; end: string }[] = [
-  { role: 'Engineering Intern', company: 'Some Company', start: '2020', end: '2021' },
+  { role: 'Systems Software Engineer', company: 'Nexus Data Systems', start: '2019', end: '2021' },
 ];
 
 export const education: Education[] = [
   {
     degree: 'B.S.',
-    field: 'Computer Science',
-    school: 'State University',
-    start: '2016',
-    end: '2020',
+    field: 'Computer Science & Distributed Systems',
+    school: 'Institute of Technology',
+    start: '2015',
+    end: '2019',
   },
 ];
 
 export const skillGroups: SkillGroup[] = [
   {
-    title: 'Languages',
-    skills: ['TypeScript', 'Python', 'Go'],
+    title: 'Languages & Runtimes',
+    skills: ['Go', 'TypeScript', 'Rust', 'Python', 'Node.js', 'SQL'],
   },
   {
-    title: 'Platforms & Tools',
-    skills: ['React', 'PostgreSQL', 'Docker', 'AWS'],
+    title: 'Cloud & Infrastructure',
+    skills: ['Kubernetes', 'Docker', 'Linux', 'Terraform', 'Cloudflare', 'PostgreSQL', 'Redis'],
   },
   {
-    title: 'Interests',
-    skills: ['Distributed systems', 'Developer tooling', 'Photography'],
+    title: 'Web & Systems Architecture',
+    skills: ['Astro', 'React', 'REST / gRPC', 'Distributed Systems', 'Network Routing', 'Performance Optimization'],
   },
 ];
 
 /** Words typed out one character at a time in the hero */
 export const typingRoles = [
-  'software engineer',
-  'occasional photographer',
-  'weekend hiker',
-  'coffee enthusiast',
+  'Systems Architect',
+  'Full-Stack Engineer',
+  'Cloud Infrastructure Builder',
+  'Visual Explorer',
 ];

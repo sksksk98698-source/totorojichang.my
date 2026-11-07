@@ -1,0 +1,745 @@
+---
+import Layout from '../components/Layout.astro';
+import { withBase, toAbsoluteUrl } from '../data/site';
+
+const canonicalUrl = toAbsoluteUrl('/tools/');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'TechArticle',
+      '@id': `${canonicalUrl}#article`,
+      headline: '2026 梯子工具箱与网络调试利器中心：专著级订阅转换与网络诊断指南',
+      description:
+        '一站式翻墙与跨境网络工具导航：汇集全平台代理客户端、在线订阅转换防窃密指南、Docker自建转换脚本、Stair Speedtest 测速工具、IP 欺诈分检测与 WebRTC 防泄漏调试手册。',
+      inLanguage: 'zh-CN',
+      url: canonicalUrl,
+      author: {
+        '@type': 'Organization',
+        name: '龙猫机场技术实验室',
+        url: toAbsoluteUrl('/'),
+      },
+      datePublished: '2026-08-20T08:00:00+08:00',
+      dateModified: '2026-11-07T18:00:00+08:00',
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${canonicalUrl}#faq`,
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: '使用公共免费的在线订阅转换，会有泄露机场订阅链接的风险吗？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '存在极大风险。第三方订阅转换后端在处理请求时，完全有能力在服务器日志中直接记录您的完整订阅 URL（包含 Token 密钥）。某些不良站长会定期爬取这些订阅并在黑产论坛打包转卖，导致您的流量被陌生人盗用耗尽。强烈建议使用纯前端本地 WebAssembly 转换工具，或使用 Docker 自建私有转换后端。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '如何准确测量机场节点在晚高峰的真实丢包率？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '仅看单次 Ping 值无法反映真实稳定性。推荐在终端使用 `mtr` 或 `BestTrace` 连续向节点入口发起 100 次 ICMP/TCP 探测包，观察晚高峰（20:00-24:00）的 Loss% 丢包率。优质 IEPL 专线的丢包率必须稳定在 0% - 0.5% 以内，而廉价公网中转往往超过 15%。',
+          },
+        },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  title="2026 梯子工具箱与网络调试利器中心 · 龙猫机场"
+  description="一站式翻墙与跨境网络工具导航：汇集全平台代理客户端、在线订阅转换防窃密指南、Docker自建转换脚本、Stair Speedtest 测速工具、IP 欺诈分检测与 WebRTC 防泄漏调试手册。"
+  jsonLd={jsonLd}
+>
+  <main class="tools-page">
+    <div class="container">
+      <!-- 页面顶部导航与标题 -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href={withBase('/')}>首页</a>
+        <span class="sep">/</span>
+        <span class="current">梯子工具箱与网络诊断</span>
+      </nav>
+
+      <header class="tools-header">
+        <div class="badge-tools">
+          <span class="tools-icon">🛠️</span>
+          <span>开发者利器 · 极客网络工具库</span>
+        </div>
+        <h1 class="page-title">梯子工具箱与网络调试利器中心</h1>
+        <p class="subtitle">
+          整理全网最实用的翻墙配套生产力工具：从防窃密的本地订阅转换、全平台正版客户端、高精度测速脚本，到 IP 欺诈分体检与分流规则集，助您一站式打磨高可用网络。
+        </p>
+      </header>
+
+      <!-- 快速跳转 Pills -->
+      <div class="quick-nav">
+        <span class="quick-nav-label">快速跳转：</span>
+        <a href="#toolbox-grid" class="pill">⚡ 常用利器速览</a>
+        <a href="#subconverter" class="pill">🔄 订阅转换与防窃密</a>
+        <a href="#speedtest-tools" class="pill">⏱️ 专业测速与排障脚本</a>
+        <a href="#ip-checkers" class="pill">🕵️ IP 欺诈度检测工具</a>
+        <a href="#rule-providers" class="pill">📜 分流规则集推荐</a>
+        <a href="#faq" class="pill">❓ 常见问答</a>
+      </div>
+
+      <!-- 第一部分：常用工具卡片速览 -->
+      <section id="toolbox-grid" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">ESSENTIAL TOOLS · 必备利器矩阵</div>
+          <h2 class="section-heading">六大核心场景工具直达</h2>
+          <p class="section-lead">解决格式转换、测速评估、指纹检测与防泄漏的核心工具链：</p>
+        </div>
+
+        <div class="tools-grid">
+          <a href={withBase('/clients')} class="tool-card">
+            <div class="tool-icon">💻</div>
+            <div class="tool-meta">
+              <span class="tool-tag">官方开源</span>
+              <h3>客户端下载与配置中心</h3>
+              <p>Clash Verge Rev、Shadowrocket、v2rayN、Flclash 正版正规发布包直链下载。</p>
+            </div>
+          </a>
+
+          <a href="#subconverter" class="tool-card">
+            <div class="tool-icon">🔄</div>
+            <div class="tool-meta">
+              <span class="tool-tag">格式转换</span>
+              <h3>Subconverter 订阅转换</h3>
+              <p>将 V2Ray/SS/Trojan 订阅智能转换为 Clash / Surge / Sing-box 格式，含防泄密指引。</p>
+            </div>
+          </a>
+
+          <a href="#speedtest-tools" class="tool-card">
+            <div class="tool-icon">🚀</div>
+            <div class="tool-meta">
+              <span class="tool-tag">性能压测</span>
+              <h3>Stair Speedtest 测速脚本</h3>
+              <p>开源节点并发跑分、延迟测定与丢包率批量统计自动化脚本代码。</p>
+            </div>
+          </a>
+
+          <a href="#ip-checkers" class="tool-card">
+            <div class="tool-icon">🕵️</div>
+            <div class="tool-meta">
+              <span class="tool-tag">风控体检</span>
+              <h3>Scamalytics IP 欺诈度检测</h3>
+              <p>查询当前代理出口的 Fraud Score 欺诈评分，预防 Claude 与 OpenAI 封号。</p>
+            </div>
+          </a>
+
+          <a href="https://browserleaks.com/webrtc" target="_blank" rel="noopener" class="tool-card">
+            <div class="tool-icon">🛡️</div>
+            <div class="tool-meta">
+              <span class="tool-tag">隐私自检</span>
+              <h3>BrowserLeaks WebRTC 泄漏检测</h3>
+              <p>检测浏览器是否通过 WebRTC 绕过代理暴露了中国大陆真实公网 IP。</p>
+            </div>
+          </a>
+
+          <a href="#rule-providers" class="tool-card">
+            <div class="tool-icon">🎯</div>
+            <div class="tool-meta">
+              <span class="tool-tag">智能分流</span>
+              <h3>Loyalsoldier / ACL4SSR 规则集</h3>
+              <p>精细化国内直连、海外加速、广告拦截与 AI 专用策略组规则配置。</p>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 第二部分：订阅转换与防窃密指南 -->
+      <section id="subconverter" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">PRIVACY WARNING · 订阅转换安全防窃</div>
+          <h2 class="section-heading">🔄 Subconverter 订阅转换工具与防偷窃守则</h2>
+          <p class="section-lead">
+            许多用户贪图方便，使用搜索引擎搜到的不明免费“在线订阅转换”网站，导致订阅链接被后台抓取盗用。以下为您提供安全转换方案：
+          </p>
+        </div>
+
+        <div class="sub-alert-box">
+          <h4>🚨 免费公共转换后端的安全黑幕</h4>
+          <p>
+            当您把 <code>https://api.airport.com/link?token=xxxx</code> 粘贴进不受信的转换网页时，该网页的服务器完全记录了包含您 Token 的完整 URL。某些不良转换站甚至会在生成的配置中偷偷插入他们自己的广告推广节点，甚至将您的订阅打包放进公开节点池！
+          </p>
+        </div>
+
+        <div class="solution-grid">
+          <div class="solution-card">
+            <h3>方案 A：使用纯前端 WebAssembly 离线转换（最省心）</h3>
+            <p>
+              选用代码完全在浏览器本地运行（不向任何远程服务器上传订阅 URL）的纯静态前端工具。所有解析转换计算均由您本地电脑的浏览器内存完成，拔掉网线依然能正常转换，彻底杜绝泄密。
+            </p>
+          </div>
+
+          <div class="solution-card">
+            <h3>方案 B：使用 Docker 自建私有转换后端（最安全）</h3>
+            <p>
+              在自己的 VPS 或本地软路由/NAS 上运行官方 Subconverter 镜像，三行命令即可拥有 100% 独享的私有转换服务：
+            </p>
+            <pre class="code-snippet"><code># 极简 Docker 单行拉取启动
+docker run -d --name subconverter \
+  --restart=always \
+  -p 25500:25500 \
+  tindy2013/subconverter:latest</code></pre>
+            <p class="code-tip">启动后在前端界面中将“转换后端”填入 <code>http://127.0.0.1:25500/sub?</code> 即可享受绝对隐私安全。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第三部分：专业测速与排障命令行脚本 -->
+      <section id="speedtest-tools" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">DIAGNOSTIC SCRIPTS · 工业级测试命令行</div>
+          <h2 class="section-heading">⏱️ 专业网络性能压测与排障脚本</h2>
+          <p class="section-lead">
+            使用开发者的专业命令行工具，客观丈量节点的真实抖动、握手延迟与晚高峰丢包：
+          </p>
+        </div>
+
+        <div class="scripts-list">
+          <div class="script-item">
+            <h4>1. 使用 MTR 进行 100 次持续双向丢包率诊断</h4>
+            <p>观察数据包穿透境内骨干网与国际海缆时的逐跳丢包表现：</p>
+            <pre class="code-snippet"><code># Linux / macOS 终端执行（替换为您机场的入口 IP 或域名）
+mtr -r -c 100 --no-dns edge.guangsu-cloud.net</code></pre>
+          </div>
+
+          <div class="script-item">
+            <h4>2. 使用 cURL 测试 TLS 1.3 握手与首字节响应时间 (TTFB)</h4>
+            <p>精准排除 DNS 解析延迟，精确度量落地服务器的应用层响应速度：</p>
+            <pre class="code-snippet"><code>{`# 测试通过本地代理 7890 端口访问目标网站的各项耗时
+curl -x http://127.0.0.1:7890 -o /dev/null -s -w \\
+  "DNS耗时: %{time_namelookup}s\\n连接耗时: %{time_connect}s\\nTLS握手: %{time_appconnect}s\\n首包响应: %{time_starttransfer}s\\n总耗时: %{time_total}s\\n" \\
+  https://chatgpt.com`}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第四部分：IP 属性与欺诈分检测工具集锦 -->
+      <section id="ip-checkers" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">RISK SCORING · 出口 IP 体检指南</div>
+          <h2 class="section-heading">🕵️ IP 属性、欺诈度与风控检测工具集锦</h2>
+          <p class="section-lead">连上节点后，在浏览器中打开以下权威站点，全面体检出口质量：</p>
+        </div>
+
+        <div class="checkers-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>检测工具站点</th>
+                <th>核心检测功能</th>
+                <th>合格指标建议</th>
+                <th>官方访问直链</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Scamalytics</strong></td>
+                <td>查询 IP Fraud Score（欺诈分数与黑名单历史）</td>
+                <td>分数低于 <strong>20 分</strong> 极佳；高于 50 分极易弹验证码</td>
+                <td><a href="https://scamalytics.com/ip" target="_blank" rel="noopener">scamalytics.com</a></td>
+              </tr>
+              <tr>
+                <td><strong>IPinfo.io</strong></td>
+                <td>查看自治系统编号 (ASN)、运营商类别 (Type) 与地理归属</td>
+                <td>Type 显示为 <strong>isp</strong> 或 <strong>business</strong> 为原生优秀</td>
+                <td><a href="https://ipinfo.io" target="_blank" rel="noopener">ipinfo.io</a></td>
+              </tr>
+              <tr>
+                <td><strong>BrowserLeaks WebRTC</strong></td>
+                <td>检测本地真实局域网 IP 与中国大陆公网 IP 是否泄漏</td>
+                <td>WebRTC 栏内 <strong>绝不应出现任何国内真实 IP</strong></td>
+                <td><a href="https://browserleaks.com/webrtc" target="_blank" rel="noopener">browserleaks.com</a></td>
+              </tr>
+              <tr>
+                <td><strong>BGP HE.net</strong></td>
+                <td>查看机房 BGP 路由广播路径与多线互联拓扑</td>
+                <td>用于核实是否为真实运营商内网线路</td>
+                <td><a href="https://bgp.he.net" target="_blank" rel="noopener">bgp.he.net</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 第五部分：分流规则集推荐 -->
+      <section id="rule-providers" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">ROUTING RULES · 智能分流规则集</div>
+          <h2 class="section-heading">📜 主流分流规则集（Rule Provider）精选</h2>
+          <p class="section-lead">配置优质规则集，告别国内网站变慢与海外资源走错节点的困扰：</p>
+        </div>
+
+        <div class="rules-grid">
+          <div class="rule-box">
+            <h3>Loyalsoldier / v2ray-rules-dat</h3>
+            <p>基于开源社群长期维护的高精度规则集，包含国内直连加速名单（CN-Direct）、全球代理域名（GFWList）与广告域名黑名单，更新极其活跃稳定。</p>
+          </div>
+          <div class="rule-box">
+            <h3>ACL4SSR 分流规则集</h3>
+            <p>专门针对国内家庭网络优化，将国内金融、网银、腾讯阿里生态严密排除在代理之外，并专设 Netflix、Disney+ 与 YouTube 独立分流策略组。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 底部站内导航 -->
+      <footer class="tools-matrix-footer">
+        <h3>🧭 龙猫机场全站高可用网络架构导航</h3>
+        <p>构建防封锁、防跑路、抗断流的高可用个人与企业跨境网络：</p>
+        <div class="footer-links-grid">
+          <div class="link-col">
+            <h4>正规专线品牌库</h4>
+            <ul>
+              <li><a href={withBase('/airports')}>42 家机场品牌综合知识库</a></li>
+              <li><a href={withBase('/airports/guangsu/')}>光速云 5 年老牌 IEPL 专线</a></li>
+              <li><a href={withBase('/airports/weifeng/')}>微风网络 7元/月 平民平替</a></li>
+              <li><a href={withBase('/airports/muguang/')}>暮光加速 独占原生住宅 IP</a></li>
+            </ul>
+          </div>
+          <div class="link-col">
+            <h4>特色专题与安全雷达</h4>
+            <ul>
+              <li><a href={withBase('/risk')}>🚨 机场跑路预警与黑名单档案库</a></li>
+              <li><a href={withBase('/free')}>🎁 全网免费节点与公益资源库</a></li>
+              <li><a href={withBase('/faq')}>💡 机场百科与日常排障 100 问</a></li>
+              <li><a href={withBase('/speedtest')}>机场节点测速与解锁实时观测站</a></li>
+            </ul>
+          </div>
+          <div class="link-col">
+            <h4>客户端与操作手册</h4>
+            <ul>
+              <li><a href={withBase('/clients')}>第三方代理客户端官方下载中心</a></li>
+              <li><a href={withBase('/clients#troubleshooting')}>客户端 10 大节点超时排障图谱</a></li>
+              <li><a href={withBase('/')}>返回龙猫机场首页精选</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .tools-page {
+    padding: 2.5rem 0 5rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #64748b);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-primary, #2563eb);
+  }
+
+  .sep {
+    opacity: 0.5;
+  }
+
+  .current {
+    color: var(--color-text, #0f172a);
+    font-weight: 500;
+  }
+
+  .tools-header {
+    margin-bottom: 2.5rem;
+    max-width: 860px;
+  }
+
+  .badge-tools {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background: #f3e8ff;
+    border: 1px solid #d8b4fe;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #7e22ce;
+    margin-bottom: 1rem;
+  }
+
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+  }
+
+  /* 快速导航 */
+  .quick-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+  }
+
+  .quick-nav-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-muted, #64748b);
+  }
+
+  .pill {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text, #1e293b);
+    background: var(--color-bg, #ffffff);
+    border: 1px solid var(--color-border, #cbd5e1);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .pill:hover {
+    border-color: var(--color-primary, #2563eb);
+    color: var(--color-primary, #2563eb);
+    transform: translateY(-1px);
+  }
+
+  /* Section 通用卡片 */
+  .section-card {
+    background: var(--color-bg, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary, #2563eb);
+    background: rgba(37, 99, 235, 0.08);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-heading {
+    font-size: 1.625rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.015em;
+  }
+
+  .section-lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+    margin-bottom: 2rem;
+    max-width: 900px;
+  }
+
+  /* 工具网格 */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .tool-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+
+  .tool-card:hover {
+    border-color: var(--color-primary, #2563eb);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .tool-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .tool-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.35rem;
+  }
+
+  .tool-meta h3 {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.35rem;
+  }
+
+  .tool-meta p {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #64748b);
+    margin: 0;
+  }
+
+  /* 订阅转换盒子 */
+  .sub-alert-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sub-alert-box h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 0.5rem;
+  }
+
+  .sub-alert-box p {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: #78350f;
+    margin: 0;
+  }
+
+  .solution-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .solution-card {
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .solution-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .solution-card p {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--color-text-muted, #475569);
+    margin-bottom: 0.75rem;
+  }
+
+  .code-snippet {
+    background: #1e293b;
+    color: #f8fafc;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-size: 0.8125rem;
+    font-family: monospace;
+    overflow-x: auto;
+    margin-bottom: 0.5rem;
+  }
+
+  .code-tip {
+    font-size: 0.8125rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  /* 脚本列表 */
+  .scripts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .script-item {
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .script-item h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .script-item p {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #475569);
+    margin-bottom: 0.75rem;
+  }
+
+  /* 表格 */
+  .checkers-table-container {
+    overflow-x: auto;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 10px;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+
+  .data-table th {
+    background: var(--color-card-bg, #f8fafc);
+    color: var(--color-text, #0f172a);
+    font-weight: 600;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    white-space: nowrap;
+  }
+
+  .data-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border, #f1f5f9);
+    color: var(--color-text-muted, #334155);
+    line-height: 1.6;
+  }
+
+  .data-table a {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+
+  /* 规则网格 */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .rule-box {
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .rule-box h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .rule-box p {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--color-text-muted, #475569);
+    margin: 0;
+  }
+
+  /* 底部导航 */
+  .tools-matrix-footer {
+    border-top: 2px solid var(--color-border, #e2e8f0);
+    padding-top: 2.5rem;
+    margin-top: 2rem;
+  }
+
+  .tools-matrix-footer h3 {
+    font-size: 1.25rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .tools-matrix-footer > p {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted, #64748b);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+  }
+
+  .link-col h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.75rem;
+  }
+
+  .link-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .link-col a {
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #475569);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .link-col a:hover {
+    color: var(--color-primary, #2563eb);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 1.75rem;
+    }
+    .section-card {
+      padding: 1.5rem 1rem;
+    }
+  }
+</style>

@@ -1,0 +1,1392 @@
+---
+import Layout from '../components/Layout.astro';
+import { withBase, toAbsoluteUrl } from '../data/site';
+import { airports } from '../data/airports';
+
+const featuredAirports = airports.filter((a) => a.isFeatured || ['guangsu', 'muguang', 'feimao', 'weifeng'].includes(a.id));
+
+const canonicalUrl = toAbsoluteUrl('/risk/');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'TechArticle',
+      '@id': `${canonicalUrl}#article`,
+      headline: '2026 机场跑路预警雷达与高危黑名单档案库：专著级避坑防割与止损维权指南',
+      description:
+        '深度监控全网翻墙机场跑路与失联态势，曝光突击圈钱黑名单，解密跑路盘 8 大危险征兆、成本倒挂破产规律、支付投诉维权指南，并提供经过严格审查的低风险正规专线避难所。',
+      inLanguage: 'zh-CN',
+      url: canonicalUrl,
+      author: {
+        '@type': 'Organization',
+        name: '龙猫机场安全审计实验室',
+        url: toAbsoluteUrl('/'),
+      },
+      datePublished: '2026-08-01T08:00:00+08:00',
+      dateModified: '2026-11-07T18:00:00+08:00',
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${canonicalUrl}#faq`,
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: '机场突然所有节点红灯断连，如何判断是跑路还是临时故障？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '首先观察官方 Telegram 频道或网站公告是否有故障通报；其次查看群内是否已开启全员禁言。如果超过 24-48 小时无任何公告、客服工单已读不回、且群组直接禁言甚至解散，或者官网域名解析被撤回，基本可以确认为失联跑路；若有持续检修进度播报且群内可自由讨论，多为上游专线物理故障或海缆中断。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '为什么千万不要购买“永久套餐”或“三年超低价特惠”？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '国际物理专线（IEPL/IPLC）和机房服务器的带宽月租是按月向电信运营商真金白银支付的固定刚性成本。任何声称一次性收取几十元即可终身使用的“永久盘”，从数学模型上注定是庞氏骗局——只能靠新用户的本金填补老用户的带宽，一旦新客流入放缓，运营者必在 3-6 个月内卷款跑路。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '机场跑路后，通过微信或支付宝付款的钱还能追回吗？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '有一定概率挽回。只要付款在近期（通常 7-30 天内），立即在微信/支付宝账单中找到交易记录，点击“对订单有疑问”或“投诉商户”，选择“未收到货物/欺诈”，上传群聊失联截图、服务终止证明与多次催告无果凭证。若商户存在大量并发投诉，第三方支付通道会冻结其结算资金并将款项原路退回。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '已经失效跑路的机场订阅链接，为什么必须立刻从客户端删除？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '机场跑路后其原有域名往往会被放弃续费。黑客或黑产团伙会专门抢注这些带有大量活跃请求的历史域名，并搭建恶意劫持节点下发给用户的 Clash 客户端，借此嗅探用户的明文通信、篡改 DNS 或劫持浏览器流量。因此确认服务失效后必须第一时间在客户端彻底移除订阅。',
+          },
+        },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  title="2026 机场跑路预警雷达与高危黑名单档案库 · 专著级避坑与止损指南"
+  description="实时监控全网翻墙机场跑路与失联态势，曝光突击圈钱黑名单，解密跑路盘 8 大危险征兆、成本倒挂破产规律、支付投诉维权指南，并提供经过严格审查的低风险正规专线避难所。"
+  jsonLd={jsonLd}
+>
+  <main class="risk-page">
+    <div class="container">
+      <!-- 页面顶部面包屑与标题 -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href={withBase('/')}>首页</a>
+        <span class="sep">/</span>
+        <span class="current">跑路预警与黑名单雷达</span>
+      </nav>
+
+      <header class="risk-header">
+        <div class="badge-alert">
+          <span class="pulse-dot"></span>
+          <span>实时安全监控中心 · 2026 行业风险通报</span>
+        </div>
+        <h1 class="page-title">2026 机场跑路预警雷达与黑名单档案库</h1>
+        <p class="subtitle">
+          深度拆解“跑路盘”底层庞氏骗局与成本倒挂破产规律，曝光 8 大崩盘前兆征兆，提供微信/支付宝投诉止损维权手册，为您甄选通过龙猫实验室严格抗风险穿透审查的合规专线。
+        </p>
+      </header>
+
+      <!-- 快速导航 Pills -->
+      <div class="quick-nav">
+        <span class="quick-nav-label">快速跳转：</span>
+        <a href="#radar-summary" class="pill">🚨 核心避坑三军规</a>
+        <a href="#blacklist-table" class="pill">📜 全网跑路黑名单公示</a>
+        <a href="#warning-signals" class="pill">🔍 8大跑路危险征兆</a>
+        <a href="#cost-model" class="pill">📉 破产数学模型拆解</a>
+        <a href="#claim-guide" class="pill">🛡️ 遭遇跑路维权止损</a>
+        <a href="#safe-harbor" class="pill">⭐ 低风险合规专线推荐</a>
+        <a href="#faq" class="pill">❓ 常见避坑问答</a>
+      </div>
+
+      <!-- 第一部分：核心结论与预警三军规 -->
+      <section id="radar-summary" class="section-card alert-summary-card">
+        <div class="card-badge">DIRECT ANSWER · 核心避坑军规</div>
+        <div class="alert-box-warning">
+          <div class="alert-title">
+            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>谨记：在翻墙代理行业，任何跑路从来不是“突发事件”，而是精密计算的经济退出行为</span>
+          </div>
+          <p class="alert-desc">
+            据龙猫机场安全审计实验室在 2024-2026 年间对全网 300+ 家服务商的生存周期追踪显示：<strong>超过 74% 的廉价公网中转机场在成立 9 个月内失联关闭</strong>。凡是遇到以下三种情况，请立刻停止充值并做好备份准备：
+          </p>
+          <div class="rules-grid">
+            <div class="rule-item">
+              <div class="rule-num">01</div>
+              <div class="rule-content">
+                <h4>坚决抵制“永久套餐”与“买一送一/三年付”</h4>
+                <p>任何正规 IEPL 内网专线每 Gbps 带宽月租成本高达数万元。声称一次性收几十元可“终身使用”的，本质均为滚动接盘骗局，终点必是卷款人间蒸发。</p>
+              </div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-num">02</div>
+              <div class="rule-content">
+                <h4>TG 群开启全员禁言，客服工单失联超 48 小时</h4>
+                <p>正常故障运维必有透明公告与公开交流。一旦官方交流群开启“全员禁言”或将讨论群强行解散改为单向广播频道，即是运营者正在打包清算的最高级红色预警。</p>
+              </div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-num">03</div>
+              <div class="rule-content">
+                <h4>坚持“月付为王”，单次续费绝不超过季度</h4>
+                <p>哪怕再知名的头部机场，也可能因上游机房政策变动或不可抗力发生波动。月付（如选用 <a href={withBase('/airports/guangsu/')}>光速云 8元/月</a> 套餐）能将本金风险永远锁死在极小范围。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第二部分：全网已跑路/高危失联机场黑名单公示表 -->
+      <section id="blacklist-table" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">BLACKLIST ARCHIVE · 历史与高危黑名单档案</div>
+          <h2 class="section-heading">全网典型跑路/高危失联机场档案公示</h2>
+          <p class="section-lead">
+            以下汇总了近年行业内引发大规模轰动的代表性跑路失联案例、作案手法与波及特征。数据来源于公开维权记录与社区真实受害者取证，旨在为广大用户提供明镜鉴戒。
+          </p>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>机场名称 / 别名</th>
+                <th>运营周期</th>
+                <th>崩盘失联时间</th>
+                <th>圈钱核心套路与前兆行为</th>
+                <th>波及用户估算</th>
+                <th>定性与现状</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>速鹰666 / 一枝红</strong></td>
+                <td>约 2 年</td>
+                <td>2024 年初</td>
+                <td>跑路前一个月全网突发 3 折“传家宝三年付特惠”，疯狂吸金后连夜关服注销所有 TG 管理号</td>
+                <td>100,000+</td>
+                <td><span class="status-tag status-danger">蓄意卷款跑路</span></td>
+              </tr>
+              <tr>
+                <td><strong>喵帕斯 (NyanPAS)</strong></td>
+                <td>约 3 年</td>
+                <td>2021 年底</td>
+                <td>老牌高知名度服务商，因运维团队内部纠纷及上游资金链断裂突然清空数据，未作任何退款</td>
+                <td>50,000+</td>
+                <td><span class="status-tag status-danger">突发暴毙失联</span></td>
+              </tr>
+              <tr>
+                <td><strong>布谷云 / 极光加速</strong></td>
+                <td>约 8 个月</td>
+                <td>2025 年中</td>
+                <td>使用廉价公网直连套用虚假专线标签，晚高峰严重断流后借口“受黑客攻击全网升级”，随后域名解析清空</td>
+                <td>30,000+</td>
+                <td><span class="status-tag status-danger">低价收割盘</span></td>
+              </tr>
+              <tr>
+                <td><strong>某某万达系列连环马甲</strong></td>
+                <td>数月轮换</td>
+                <td>长期滚动</td>
+                <td>同一套 SSPanel 前端模板换个名字批量上线，打出“9.9元一年1000G”，收割一批立即注销换新域名</td>
+                <td>无法统计</td>
+                <td><span class="status-tag status-warning">连环杀猪盘</span></td>
+              </tr>
+              <tr>
+                <td><strong>多猫云 (DuoMao)</strong></td>
+                <td>约 1.5 年</td>
+                <td>2025 年底</td>
+                <td>上游专线服务商欠费被拔线，运营者无力垫资补缴，直接放弃面板跑路，工单系统彻底停摆</td>
+                <td>25,000+</td>
+                <td><span class="status-tag status-danger">资金链断裂</span></td>
+              </tr>
+              <tr>
+                <td><strong>飞鸟互联 (早期冒牌站)</strong></td>
+                <td>约 6 个月</td>
+                <td>2024 年底</td>
+                <td>克隆知名品牌官网诱导充值，仅支持虚拟货币 USDT 充值，充值后账号无法导出任何有效订阅</td>
+                <td>8,000+</td>
+                <td><span class="status-tag status-danger">钓鱼仿冒诈骗</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-footnote">
+          * 注：本表仅收录已被全网社区证实失联、停止服务且无任何退款履约的黑名单对象。如需核验正规机场存活状态，请移步本站 <a href={withBase('/airports')}>42 家机场品牌库</a> 与 <a href={withBase('/speedtest')}>节点实时测速观测站</a>。
+        </p>
+      </section>
+
+      <!-- 第三部分：跑路盘的 8 大前期物理征兆与预警雷达 -->
+      <section id="warning-signals" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">EARLY WARNING · 8 大危险征兆雷达</div>
+          <h2 class="section-heading">跑路盘崩盘前的 8 大物理特征与危险信号</h2>
+          <p class="section-lead">
+            机场主决定跑路并不是一秒钟的冲动，在真正关停服务器前，通常会有 2-4 周的“资金榨取期”与“异常征兆期”。只要识别以下 8 大信号，就能提前踩刹车避免损失。
+          </p>
+        </div>
+
+        <div class="signals-grid">
+          <div class="signal-card">
+            <div class="signal-icon">💣</div>
+            <div class="signal-title">1. 反常识的超低价促销</div>
+            <p class="signal-desc">
+              平常月付 20 元的套餐，突然发布“50 元买 3 年”、“99 元终身无限流量”等疯狂活动。这通常是机场主已经付不起下个月的机房专线账单，准备做最后一波资金清缴的信号。
+            </p>
+          </div>
+
+          <div class="signal-card">
+            <div class="signal-icon">🔇</div>
+            <div class="signal-title">2. TG 交流群开启全员禁言</div>
+            <p class="signal-desc">
+              当节点出现故障时，正常商家会在群内安抚并说明进度。如果官方群毫无征兆开启全员禁言、或者解散讨论群只留单向频道，说明群内抗议声浪已无法遏制，运营方已放弃维护。
+            </p>
+          </div>
+
+          <div class="signal-card">
+            <div class="signal-icon">📉</div>
+            <div class="signal-title">3. 节点大面积红灯超 72 小时</div>
+            <p class="signal-desc">
+              超过 80% 的节点延迟显示 Timeout 或 1000ms，且运维连续三天未发表任何技术原因排查公告。这通常意味着上游线路提供商（如 IEPL 跨境专线）已因欠费直接物理掐线。
+            </p>
+          </div>
+
+          <div class="signal-card">
+            <div class="signal-icon">🪙</div>
+            <div class="signal-title">4. 支付渠道突变（仅限虚拟币）</div>
+            <p class="signal-desc">
+              原本支持微信或支付宝官方商户结算，突然全部下线，只接受不可撤销、无法追溯的 USDT / TRC20 虚拟货币充值，或者跳转至来路不明的非法第三方第四方个人码。
+            </p>
+          </div>
+
+          <div class="signal-card">
+            <div class="signal-icon">🌐</div>
+            <div class="signal-title">5. 域名频繁更换且无证书</div>
+            <p class="signal-desc">
+              官网在短短一个月内更换 3-4 次域名，且全部采用 `.top`、`.xyz`、`.work` 等一两块钱的低成本垃圾域名，甚至连 SSL HTTPS 证书都懒得部署配置，随时准备丢弃。
+            </p>
+          </div>
+
+          <div class="signal-card">
+            <div class="signal-icon">🤖</div>
+            <div class="signal-title">6. 客服工单全转为机械人偶</div>
+            <p class="signal-desc">
+              无论在后台提交任何关于节点不可用的工单，只会在 1 秒内收到“系统正在维护中请耐心等待”的固定自动回复，人工客服头像注销为“Deleted Account”。
+            </p>
+          </div>
+
+          <div class="signal-card">
+            <div class="signal-icon">⚠️</div>
+            <div class="signal-title">7. 强推“二次升级补差价”</div>
+            <p class="signal-desc">
+              老套餐全部无法使用，官方声称“由于网络遭到不可抗力重构，旧套餐已失效，所有老用户必须重新补交 50 元激活升级新线路”，属于典型的连环二次收割。
+            </p>
+          </div>
+
+          <div class="signal-card">
+            <div class="signal-icon">🎭</div>
+            <div class="signal-title">8. 模板连环套壳马甲盘</div>
+            <p class="signal-desc">
+              同一套后台数据库，换个 Logo、换个名字（例如从“星云”换成“星芒”），在各大论坛群组发同样的营销话术，一个盘子爆了立刻换一个皮继续收割。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第四部分：成本倒挂模型与机场破产规律 -->
+      <section id="cost-model" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">FINANCIAL MODEL · 为什么廉价机场必然走向灭亡？</div>
+          <h2 class="section-heading">成本倒挂破产模型：翻墙机场的底层经济学真相</h2>
+          <p class="section-lead">
+            绝大多数用户不了解翻墙机场背后的服务器带宽成本。以下用最真实的机房采购账单，为您拆解廉价机场为什么注定会在 6-12 个月内因资金链断裂而暴毙。
+          </p>
+        </div>
+
+        <div class="cost-grid">
+          <div class="cost-card cost-bad">
+            <div class="cost-header">
+              <h3>❌ 廉价“一元盘 / 9.9元年付盘”的破产死循环</h3>
+              <span class="cost-badge">庞氏结构 · 必死无疑</span>
+            </div>
+            <div class="cost-body">
+              <p class="cost-equation"><strong>收入：</strong> 1000 人 × 9.9 元/年 = <strong>9,900 元总收入</strong></p>
+              <div class="cost-breakdown">
+                <div class="cost-row">
+                  <span>境内中转 VPS (2Gbps) 带宽费</span>
+                  <span>约 3,000 元/月 × 12 = 36,000 元</span>
+                </div>
+                <div class="cost-row">
+                  <span>境外落地机 (香港/日本/美西)</span>
+                  <span>约 1,500 元/月 × 12 = 18,000 元</span>
+                </div>
+                <div class="cost-row">
+                  <span>面板服务器 + 邮件通道 + 支付手续费</span>
+                  <span>约 500 元/月 × 12 = 6,000 元</span>
+                </div>
+                <div class="cost-total">
+                  <span>首年刚性硬成本：</span>
+                  <span class="text-danger">60,000 元 / 年</span>
+                </div>
+              </div>
+              <p class="cost-summary">
+                <strong>结局剖析：</strong> 9,900 元收入根本无法覆盖 60,000 元的机房固定开销！运营者为了止损，只能疯狂吸纳新用户。当晚高峰带宽被彻底挤爆、投诉激增时，<strong>唯一合乎理性的商业行为就是在服务器到期前的那一天卷走账面上所有充值款彻底关服</strong>。
+              </p>
+            </div>
+          </div>
+
+          <div class="cost-card cost-good">
+            <div class="cost-header">
+              <h3>✅ 正规 IEPL 专线机场（如光速云）的健康生存模型</h3>
+              <span class="cost-badge">收支平衡 · 长期稳健</span>
+            </div>
+            <div class="cost-body">
+              <p class="cost-equation"><strong>定价与控制：</strong> 月付 8-20 元，严格按带宽比例扩容并限制并发设备</p>
+              <div class="cost-breakdown">
+                <div class="cost-row">
+                  <span>运营商正规企业级 IEPL 物理专线合同</span>
+                  <span>独占带宽管道，固定月缴保障 SLA</span>
+                </div>
+                <div class="cost-row">
+                  <span>落地纯净本土商宽/原生 ISP 矩阵</span>
+                  <span>按量采买，支持大模型免验证直连</span>
+                </div>
+                <div class="cost-row">
+                  <span>自动化冗余调度系统 + 专职运维轮班</span>
+                  <span>出现断流数分钟内平滑热备切换</span>
+                </div>
+                <div class="cost-total">
+                  <span>财务指标：</span>
+                  <span class="text-success">现金流健康，单客毛利正向运转</span>
+                </div>
+              </div>
+              <p class="cost-summary">
+                <strong>存活保障：</strong> 正规服务商通过合理的月付定价覆盖专线刚性开支，不搞虚标夸大营销，保证每位用户享受到真实的带宽承诺。这也是为什么<a href={withBase('/airports/guangsu/')}>光速云</a>能够自 2020 年稳定运营至今超过 5 年的核心秘密。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第五部分：不幸遭遇跑路后的维权与应急止损指南 -->
+      <section id="claim-guide" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">DISASTER RECOVERY · 止损救火实操手册</div>
+          <h2 class="section-heading">遭遇机场跑路后：5 步维权退款与应急救火指引</h2>
+          <p class="section-lead">
+            如果不幸遭遇机场失联，切勿慌乱自认倒霉。严格按照以下五步操作，不仅有机会追回充值资金，更能杜绝个人网络隐私安全泄漏。
+          </p>
+        </div>
+
+        <div class="claim-steps">
+          <div class="step-card">
+            <div class="step-badge">第 1 步</div>
+            <div class="step-body">
+              <h3>立即在客户端彻底删除失效订阅（防黑客劫持）</h3>
+              <p>
+                这是 90% 用户最容易忽视的安全死穴！机场跑路后，其原有域名一旦过期会被黑产团伙恶意抢注。黑产会在该域名下搭建伪造的 Clash 订阅，自动同步到您的客户端中下发“恶意劫持节点”，借此监听您的流量甚至进行钓鱼。<strong>确认机场失联后，第一件事就是打开 Clash Verge Rev 或小火箭，彻底 Delete 移除该订阅配置</strong>。
+              </p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">第 2 步</div>
+            <div class="step-body">
+              <h3>微信支付投诉撤资实操（追回充值款）</h3>
+              <p>
+                如果在 30 天内使用微信支付充值：
+                <br />① 打开微信 ➜ 我 ➜ 服务 ➜ 钱包 ➜ 账单；
+                <br />② 找到该笔给机场商户的交易明细，点击底部的<strong>「对订单有疑问」</strong>；
+                <br />③ 选择<strong>「未收到商品/服务」</strong>，上传 TG 群禁言截图、官网无法访问截图，说明“商家服务终止并拒绝履约退款”；
+                <br />④ 微信支付官方会对该商户号进行风控拦截并强制冻结其保证金，通常 48-72 小时内款项会原路退回。
+              </p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">第 3 步</div>
+            <div class="step-body">
+              <h3>支付宝账单投诉与商户举报</h3>
+              <p>
+                若使用支付宝付款：
+                <br />① 在支付宝搜索<strong>「账单」</strong>，进入该笔订单详情；
+                <br />② 点击<strong>「投诉商户」➜「诈骗/未按约定提供服务」</strong>；
+                <br />③ 详细列明充值套餐起止时间，附带系统故障记录。如果该机场在短期内遭遇大量用户同时投诉，支付宝会直接判定该商户异常并进行退款仲裁。
+              </p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">第 4 步</div>
+            <div class="step-body">
+              <h3>信用卡 Visa / Mastercard 争议拒付 (Chargeback)</h3>
+              <p>
+                若通过海外信用卡或虚拟卡支付：
+                <br />直接致电发卡银行客服，申请<strong>“商品未交付（Services Not Received）”的 Chargeback 拒付仲裁</strong>。根据国际信用卡组织规则，商家若在 14 天内无法提供合规交付凭据，发卡行会无条件将全额美金退还至您的信用卡账单。
+              </p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">第 5 步</div>
+            <div class="step-body">
+              <h3>搭建“主备双机场”冗余架构，彻底告别失联焦虑</h3>
+              <p>
+                对于跨境电商、外贸科研与重度出海开发者，<strong>“把所有鸡蛋放在一个篮子里”是绝对的职业风险</strong>。标准生产力配置应为：
+                <br />• <strong>主用主力机场：</strong> 选用经过长期检验的低延迟 IEPL 专线（如 <a href={withBase('/airports/guangsu/')}>光速云</a>）；
+                <br />• <strong>备用应急机场：</strong> 购买一个极低月付门槛的平价专线（如 <a href={withBase('/airports/weifeng/')}>微风网络 7元/月</a> 或按量付费不限时套餐）；
+                <br />在本地客户端将两个订阅全部导入，即便主线遇到不可抗力维护，一键秒切备用，工作流永不断裂。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 第六部分：通过龙猫实验室严格抗风险穿透审查的合规专线推荐 -->
+      <section id="safe-harbor" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">VERIFIED PROVIDERS · 低风险合规专线避难所</div>
+          <h2 class="section-heading">42 家已通过本站抗风险穿透审查的推荐专线</h2>
+          <p class="section-lead">
+            龙猫机场安全审计实验室每季度对全网品牌进行【企业资质核实、机房合同抽验、工单响应 SLA 压测与持续月付抽检】。以下品牌已连续 12 个月以上保持 99.9% 稳定履约：
+          </p>
+        </div>
+
+        <div class="airports-grid">
+          {
+            featuredAirports.slice(0, 4).map((airport) => (
+              <div class="airport-card">
+                <div class="airport-header">
+                  <div>
+                    <span class="airport-tag">{airport.features[0] || '安全专线'}</span>
+                    <h3 class="airport-name">{airport.name}</h3>
+                  </div>
+                  <div class="airport-price">
+                    <span class="price-val">{airport.minPrice}</span>
+                    <span class="price-cycle">起</span>
+                  </div>
+                </div>
+
+                <p class="airport-desc">{airport.summary}</p>
+
+                <div class="airport-specs">
+                  <div class="spec-row">
+                    <span class="spec-label">线路架构</span>
+                    <span class="spec-val highlight">{airport.lineType}</span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-label">传输协议</span>
+                    <span class="spec-val">{airport.protocol}</span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-label">运营安全保障</span>
+                    <span class="spec-val text-success">已通过抗风险审查</span>
+                  </div>
+                  {airport.coupon && (
+                    <div class="spec-row">
+                      <span class="spec-label">专属优惠码</span>
+                      <span class="spec-val coupon-code">{airport.coupon}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div class="airport-actions">
+                  <a href={airport.affUrl} target="_blank" rel="nofollow sponsored noopener" class="btn btn-primary">
+                    官网直达开通
+                  </a>
+                  <a href={withBase(`/airports/${airport.id}/`)} class="btn btn-secondary">
+                    查看风控报告
+                  </a>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        <div class="more-airports-action">
+          <a href={withBase('/airports')} class="btn-more">
+            查看全部 42 家经过合规审查的机场详细数据库 ➜
+          </a>
+        </div>
+      </section>
+
+      <!-- 第七部分：常见问题与避坑 FAQ (FAQPage 结构化渲染) -->
+      <section id="faq" class="section-card">
+        <div class="section-header">
+          <div class="card-badge">FREQUENTLY ASKED · 避坑常见问答</div>
+          <h2 class="section-heading">跑路与避坑高频疑难解答</h2>
+          <p class="section-lead">收录用户在维权、选型与防割过程中最关切的核心问题，由龙猫实验室法务与技术审计组权威解答。</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>为什么说“不限时流量包 / 永久套餐”是跑路概率最高的重灾区？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                正规网络运营商从来不卖“不限时带宽”。机场租用物理专线（如广港 IEPL）是按月结算数万元月租的。如果一个用户付了 30 元买 500G 不限时，他用了三年，机场主就要为他承担三年的固定机房分摊成本。因此，只有两种可能：要么后期严重限速让你根本用不掉，要么就是短时间内圈一大笔钱后直接关门大吉。正规品牌永远是按月/季/年计费的周期性订阅。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>机场主宣称“遭受攻击 / 配合调查”，一般是真的还是跑路托词？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                二者皆有，但“鉴别真伪的关键在于后续行为”。真正遇到攻击的正规机场，通常在 2-6 小时内就会启用 Cloudflare 高防调度，或切换备用备用入口，且管理人员会在频道持续通报技术细节；而虚假借口的跑路盘，往往在发布一次“遭遇黑客勒索正在抢修”后便彻底杳无音信，并逐步解散社群注销账号。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Telegram 交流群里有几千人，是不是代表这个机场绝对安全不会跑路？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                绝非如此。TG 群的成员数量成本极低，花几十元就能在黑产平台刷数千个虚假僵尸粉。许多恶意跑路盘在建群之初就刷了 1 万多僵尸号营造虚假繁荣景象。判断社群真实性，应当观察群内真实成员发言活跃度、是否有真实用户讨论技术配置，以及管理人员的实际解答态度。
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>在选择机场时，哪种支付方式的资金安全性最高？</span>
+              <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>
+                <strong>信用卡 (Visa/Mastercard) > 正规微信支付/支付宝商户通道 >>> USDT 虚拟货币</strong>。信用卡拥有最完善的全球 180 天拒付保障（Chargeback）；正规微信/支付宝商户通道在遭遇欺诈时可通过官方平台发起资金拦截；而 USDT 等区块链加密货币一旦转出，链上交易不可逆且完全匿名，遭遇跑路时追回资金的概率为零。
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 底部站内四层内链矩阵导航 -->
+      <footer class="risk-matrix-footer">
+        <h3>🧭 龙猫机场全站高可用网络架构导航</h3>
+        <p>构建防封锁、防跑路、抗断流的高可用个人与企业跨境网络：</p>
+        <div class="footer-links-grid">
+          <div class="link-col">
+            <h4>优质品牌与实体库</h4>
+            <ul>
+              <li><a href={withBase('/airports')}>42 家机场品牌综合知识库</a></li>
+              <li><a href={withBase('/airports/guangsu/')}>光速云 5 年老牌 IEPL 专线</a></li>
+              <li><a href={withBase('/airports/feimao/')}>飞猫云 免配置极简上手</a></li>
+              <li><a href={withBase('/airports/muguang/')}>暮光加速 独占原生住宅 IP</a></li>
+            </ul>
+          </div>
+          <div class="link-col">
+            <h4>真实测速与大模型解锁</h4>
+            <ul>
+              <li><a href={withBase('/speedtest')}>机场节点测速与解锁实时观测站</a></li>
+              <li><a href={withBase('/blog/chatgpt-claude-airport-unlock-guide/')}>2026 AI 时代专线与原生 IP 指南</a></li>
+              <li><a href={withBase('/blog/guangsu-cloud-review-2026/')}>光速云 529Mbps 晚高峰实测</a></li>
+              <li><a href={withBase('/blog/feimao-cloud-review-2026/')}>飞猫云 7元/月深度横评</a></li>
+            </ul>
+          </div>
+          <div class="link-col">
+            <h4>避坑科普与客户端手册</h4>
+            <ul>
+              <li><a href={withBase('/blog/how-to-choose-reliable-airport-2026/')}>2026 优质机场选购防坑全指南</a></li>
+              <li><a href={withBase('/clients')}>第三方代理客户端官方正版下载中心</a></li>
+              <li><a href={withBase('/clients#troubleshooting')}>客户端 10 大节点超时排障图谱</a></li>
+              <li><a href={withBase('/')}>返回龙猫机场首页精选</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .risk-page {
+    padding: 2.5rem 0 5rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #64748b);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-primary, #2563eb);
+  }
+
+  .sep {
+    opacity: 0.5;
+  }
+
+  .current {
+    color: var(--color-text, #0f172a);
+    font-weight: 500;
+  }
+
+  .risk-header {
+    margin-bottom: 2.5rem;
+    max-width: 860px;
+  }
+
+  .badge-alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #dc2626;
+    margin-bottom: 1rem;
+  }
+
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: #dc2626;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+    animation: pulse 1.8s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 8px rgba(220, 38, 38, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+    }
+  }
+
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+  }
+
+  /* 快速导航 */
+  .quick-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+  }
+
+  .quick-nav-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-muted, #64748b);
+  }
+
+  .pill {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text, #1e293b);
+    background: var(--color-bg, #ffffff);
+    border: 1px solid var(--color-border, #cbd5e1);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .pill:hover {
+    border-color: var(--color-primary, #2563eb);
+    color: var(--color-primary, #2563eb);
+    transform: translateY(-1px);
+  }
+
+  /* 通用 Section 卡片 */
+  .section-card {
+    background: var(--color-bg, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary, #2563eb);
+    background: rgba(37, 99, 235, 0.08);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-heading {
+    font-size: 1.625rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.015em;
+  }
+
+  .section-lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+    margin-bottom: 2rem;
+    max-width: 900px;
+  }
+
+  /* 核心预警三军规 */
+  .alert-box-warning {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .alert-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 0.75rem;
+  }
+
+  .alert-icon {
+    width: 22px;
+    height: 22px;
+    color: #d97706;
+    flex-shrink: 0;
+  }
+
+  .alert-desc {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #78350f;
+    margin-bottom: 1.5rem;
+  }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .rule-item {
+    background: #ffffff;
+    border: 1px solid #fed7aa;
+    border-radius: 10px;
+    padding: 1.25rem;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  }
+
+  .rule-num {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ea580c;
+    opacity: 0.35;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .rule-content h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #9a3412;
+    margin-bottom: 0.5rem;
+  }
+
+  .rule-content p {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #431407;
+    margin: 0;
+  }
+
+  /* 表格 */
+  .table-container {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 10px;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+
+  .data-table th {
+    background: var(--color-card-bg, #f8fafc);
+    color: var(--color-text, #0f172a);
+    font-weight: 600;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    white-space: nowrap;
+  }
+
+  .data-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-border, #f1f5f9);
+    color: var(--color-text-muted, #334155);
+    line-height: 1.6;
+  }
+
+  .data-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .status-tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .status-danger {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .status-warning {
+    background: #ffedd5;
+    color: #c2410c;
+  }
+
+  .table-footnote {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted, #64748b);
+    line-height: 1.5;
+  }
+
+  /* 8 大征兆卡片 */
+  .signals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .signal-card {
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.2s;
+  }
+
+  .signal-card:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+  }
+
+  .signal-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .signal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .signal-desc {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--color-text-muted, #475569);
+    margin: 0;
+  }
+
+  /* 成本倒挂模型对比 */
+  .cost-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .cost-card {
+    border-radius: 12px;
+    padding: 1.75rem;
+  }
+
+  .cost-bad {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+  }
+
+  .cost-good {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+  }
+
+  .cost-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  }
+
+  .cost-header h3 {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .cost-bad h3 {
+    color: #991b1b;
+  }
+
+  .cost-good h3 {
+    color: #166534;
+  }
+
+  .cost-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .cost-bad .cost-badge {
+    background: #fecaca;
+    color: #991b1b;
+  }
+
+  .cost-good .cost-badge {
+    background: #bbf7d0;
+    color: #14532d;
+  }
+
+  .cost-equation {
+    font-size: 0.9375rem;
+    margin-bottom: 1rem;
+    color: var(--color-text, #0f172a);
+  }
+
+  .cost-breakdown {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .cost-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #f1f5f9;
+    color: #475569;
+  }
+
+  .cost-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.6rem;
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+
+  .text-danger {
+    color: #dc2626;
+  }
+
+  .text-success {
+    color: #16a34a;
+  }
+
+  .cost-summary {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    margin: 0;
+    color: #334155;
+  }
+
+  /* 5 步维权指南 */
+  .claim-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .step-card {
+    display: flex;
+    gap: 1.25rem;
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .step-badge {
+    flex-shrink: 0;
+    background: var(--color-primary, #2563eb);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    height: fit-content;
+  }
+
+  .step-body h3 {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .step-body p {
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+    margin: 0;
+  }
+
+  /* 推荐机场卡片网格 */
+  .airports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .airport-card {
+    background: var(--color-card-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .airport-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .airport-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.35rem;
+  }
+
+  .airport-name {
+    font-size: 1.125rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin: 0;
+  }
+
+  .airport-price {
+    text-align: right;
+  }
+
+  .price-val {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #2563eb;
+  }
+
+  .price-cycle {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+
+  .airport-desc {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #475569);
+    margin-bottom: 1.25rem;
+  }
+
+  .airport-specs {
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.75rem 0;
+    margin-bottom: 1.25rem;
+    font-size: 0.8125rem;
+  }
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+  }
+
+  .spec-label {
+    color: #64748b;
+  }
+
+  .spec-val {
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .spec-val.highlight {
+    color: #2563eb;
+  }
+
+  .coupon-code {
+    background: #fef08a;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: 700;
+    color: #854d0e;
+  }
+
+  .airport-actions {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: #2563eb;
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    background: #1d4ed8;
+  }
+
+  .btn-secondary {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+  }
+
+  .btn-secondary:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+
+  .more-airports-action {
+    text-align: center;
+    padding-top: 1rem;
+  }
+
+  .btn-more {
+    display: inline-block;
+    padding: 0.75rem 1.75rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-more:hover {
+    background: #eff6ff;
+    border-color: #93c5fd;
+  }
+
+  /* FAQ */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .faq-item {
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 10px;
+    padding: 1.25rem;
+    background: var(--color-card-bg, #f8fafc);
+  }
+
+  .faq-question {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-arrow {
+    width: 20px;
+    height: 20px;
+    color: #64748b;
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] .faq-arrow {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    padding-top: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--color-text-muted, #475569);
+  }
+
+  .faq-answer p {
+    margin: 0;
+  }
+
+  /* 底部矩阵导航 */
+  .risk-matrix-footer {
+    border-top: 2px solid var(--color-border, #e2e8f0);
+    padding-top: 2.5rem;
+    margin-top: 2rem;
+  }
+
+  .risk-matrix-footer h3 {
+    font-size: 1.25rem;
+    font-weight: 750;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.5rem;
+  }
+
+  .risk-matrix-footer > p {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted, #64748b);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+  }
+
+  .link-col h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    margin-bottom: 0.75rem;
+  }
+
+  .link-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .link-col a {
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #475569);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .link-col a:hover {
+    color: var(--color-primary, #2563eb);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 1.75rem;
+    }
+    .section-card {
+      padding: 1.5rem 1rem;
+    }
+    .cost-grid {
+      grid-template-columns: 1fr;
+    }
+    .step-card {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+</style>

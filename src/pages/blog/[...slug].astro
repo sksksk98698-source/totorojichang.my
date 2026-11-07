@@ -3,7 +3,7 @@ import Layout from '../../components/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
-import { site, withBase } from '../../data/site';
+import { site, withBase, toAbsoluteUrl } from '../../data/site';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -29,8 +29,10 @@ const prev = idx > 0 ? allPosts[idx - 1] : undefined;
 const next = idx >= 0 && idx < allPosts.length - 1 ? allPosts[idx + 1] : undefined;
 
 const readingTime = Math.max(1, Math.ceil((post.body?.split(/\s+/).length ?? 0) / 220));
-const dateFmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const dateFmt = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
 const description = post.data.description ?? post.data.subtitle ?? `${post.data.title} — by ${post.data.author}`;
+const canonical = toAbsoluteUrl(`/blog/${post.id}/`);
+const coverImage = post.data.coverImage ? toAbsoluteUrl(post.data.coverImage) : toAbsoluteUrl('/og.jpg');
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -39,8 +41,17 @@ const jsonLd = {
   description,
   datePublished: post.data.date.toISOString(),
   ...(post.data.updated && { dateModified: post.data.updated.toISOString() }),
-  author: { '@type': 'Person', name: post.data.author },
-  url: `${site.url}${withBase(`/blog/${post.id}/`)}`,
+  author: {
+    '@type': 'Person',
+    name: post.data.author || site.author.name,
+    url: site.url,
+  },
+  image: coverImage,
+  url: canonical,
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': canonical,
+  },
 };
 ---
 
@@ -48,22 +59,26 @@ const jsonLd = {
   title={post.data.title}
   description={description}
   type="article"
-  image={post.data.coverImage ?? '/img/og.jpg'}
-  canonical={`${site.url}/blog/${post.id}/`}
+  image={post.data.coverImage ?? '/og.jpg'}
+  canonical={canonical}
   jsonLd={jsonLd}
+  publishedTime={post.data.date}
+  modifiedTime={post.data.updated}
+  author={post.data.author}
+  tags={post.data.tags}
 >
   <article class="section">
     <div class="container">
       <nav aria-label="Breadcrumb" style="margin-bottom: 1.5rem;">
-        <a href={withBase('/blog')}><Icon name="arrow-left" size={14} /> Back to blog</a>
+        <a href={withBase('/blog')}><Icon name="arrow-left" size={14} /> 返回测评专栏</a>
       </nav>
 
       <header style="max-width: 70ch;">
         <div class="post-meta">
-          <span class="category-badge {post.data.category}">{post.data.category}</span>
+          <span class="category-badge {post.data.category}">{post.data.category === 'tech' ? '专线实测' : '行业资讯'}</span>
           <time datetime={post.data.date.toISOString()}>{dateFmt.format(post.data.date)}</time>
           <span class="dot">·</span>
-          <span>{readingTime} min read</span>
+          <span>约 {readingTime} 分钟阅读</span>
           {post.data.updated && (
             <>
               <span class="dot">·</span>

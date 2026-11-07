@@ -12,13 +12,16 @@ const counts = new Map<string, number>();
 for (const p of allPosts) for (const t of p.data.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
 ---
 
-<Layout title="Blog" description="Notes, essays, and the occasional tangent — everything I've written lately.">
+<Layout
+  title="深度测评专栏"
+  description="龙猫机场深度测评专栏：专线选购防坑指南、光速云深度实测、网络拓扑解析与晚高峰真实评测数据。"
+>
   <section class="section">
     <div class="container">
-      <p class="eyebrow">Blog</p>
-      <h1>Writings</h1>
-      <p class="muted" style="max-width: 60ch;">
-        Things I'm learning, building, or thinking about — sometimes technical, sometimes not.
+      <p class="eyebrow">Reviews & Insights</p>
+      <h1>深度测评专栏</h1>
+      <p class="muted" style="max-width: 65ch; line-height: 1.7;">
+        基于真实晚高峰测速与网络拓扑实践的技术长文。解析 IEPL/IPLC 专线底层、各大机场优缺点剖析、ChatGPT/Claude 访问解密与科学选购指南。
       </p>
 
       {tags.length > 0 && (

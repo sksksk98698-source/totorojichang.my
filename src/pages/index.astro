@@ -1,31 +1,314 @@
 ---
 import Layout from '../components/Layout.astro';
 import Hero from '../components/Hero.astro';
-import { site, withBase } from '../data/site';
-import { experience, skillGroups } from '../data/resume';
+import Icon from '../components/Icon.astro';
+import { site, withBase, toAbsoluteUrl } from '../data/site';
+import { airports, featuredAirport } from '../data/airports';
 
-const personJsonLd = {
+const schemaGraph = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: site.author.name,
-  url: site.url,
-  image: `${site.url}${withBase('/img/og.jpg')}`,
-  jobTitle: experience[0]?.role,
-  worksFor: { '@type': 'Organization', name: experience[0]?.company },
-  email: `mailto:${site.author.email}`,
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: site.author.location,
-  },
-  sameAs: [
-    site.socials.github.url,
-    site.socials.linkedin.url,
-    ...(site.socials.instagram ? [site.socials.instagram.url] : []),
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${site.url}/#website`,
+      url: site.url,
+      name: site.title,
+      description: site.description,
+      inLanguage: 'zh-CN',
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${site.url}/#organization`,
+      name: site.author.name,
+      url: site.url,
+      logo: toAbsoluteUrl('/img/avatar.svg'),
+      sameAs: ['https://t.me/totorojichang'],
+    },
+    {
+      '@type': 'ItemList',
+      name: '2026 全网 42 家机场品牌与专线测速全景清单',
+      itemListElement: airports.map((a, idx) => ({
+        '@type': 'ListItem',
+        position: idx + 1,
+        name: a.name,
+        description: a.summary,
+        url: toAbsoluteUrl(`/airports/${a.id}/`),
+      })),
+    },
   ],
-  knowsAbout: skillGroups.flatMap((g) => g.skills).slice(0, 8),
 };
 ---
 
-<Layout title={undefined} jsonLd={personJsonLd}>
+<Layout jsonLd={schemaGraph}>
   <Hero />
+
+  <!-- 1. 编辑首推标杆（光速云）置顶高转化卡片 -->
+  <section class="section" id="featured-top" style="padding-top: 1rem;">
+    <div class="container">
+      <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(14, 165, 233, 0.08) 100%); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: var(--radius-lg); padding: clamp(1.5rem, 3vw, 2.5rem); position: relative; overflow: hidden; box-shadow: var(--shadow-md);">
+        
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1.2rem;">
+          <div style="display: flex; align-items: center; gap: 0.8rem;">
+            <span style="background: #2563eb; color: #fff; font-size: 0.8rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: var(--radius-sm); letter-spacing: 0.05em;">
+              ★ 2026 年度综合首推 No.1
+            </span>
+            <span class="muted" style="font-size: 0.85rem; font-family: var(--font-mono);">
+              2020年老牌稳定运营 · IEPL 企业级双专线
+            </span>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.9rem;">
+            专属优惠码：<strong style="color: var(--accent); background: rgba(37, 99, 235, 0.1); padding: 0.2rem 0.6rem; border-radius: var(--radius-sm); border: 1px dashed var(--accent);">AMM</strong>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; align-items: center;">
+          <div>
+            <h2 style="margin: 0 0 0.75rem; font-size: 1.85rem; display: flex; align-items: center; gap: 0.6rem;">
+              {featuredAirport.name}
+              <span style="font-size: 1rem; font-weight: 400; color: var(--accent);">折合低至 {featuredAirport.minPrice}</span>
+            </h2>
+            <p class="muted" style="line-height: 1.7; margin-bottom: 1.25rem;">
+              {featuredAirport.summary}
+            </p>
+
+            <ul style="list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; font-size: 0.9rem;">
+              <li style="display: flex; align-items: center; gap: 0.4rem;">
+                <span style="color: #10b981;">✓</span> <strong>线路架构：</strong> IEPL专线+企业内网
+              </li>
+              <li style="display: flex; align-items: center; gap: 0.4rem;">
+                <span style="color: #10b981;">✓</span> <strong>协议类型：</strong> VLESS 现代防封锁
+              </li>
+              <li style="display: flex; align-items: center; gap: 0.4rem;">
+                <span style="color: #10b981;">✓</span> <strong>香港实测：</strong> 22ms / 529Mbps
+              </li>
+              <li style="display: flex; align-items: center; gap: 0.4rem;">
+                <span style="color: #10b981;">✓</span> <strong>节点地区：</strong> 港台新日美马欧 12+ 地区
+              </li>
+            </ul>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center;">
+              <a class="btn btn-primary" href={featuredAirport.affUrl} target="_blank" rel="nofollow sponsored noopener" style="padding: 0.65rem 1.4rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
+                直达光速云官网开通 <Icon name="arrow-right" size={16} />
+              </a>
+              <a class="btn" href={withBase(`/airports/${featuredAirport.id}/`)} style="padding: 0.65rem 1.2rem; border: 1px solid var(--border);">
+                查看深度评测与实测图
+              </a>
+            </div>
+            <p class="muted" style="font-size: 0.78rem; margin-top: 0.75rem;">
+              * 折合约 8 元/月为年付折算价格。支持支付宝/微信/USDT。
+            </p>
+          </div>
+
+          <!-- 右侧实测指标仪表盘预览 -->
+          <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; font-family: var(--font-mono); font-size: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              <span style="font-weight: 600;">📊 节点实测数据快照 (2026)</span>
+              <span style="color: #10b981; font-size: 0.75rem;">● Operational</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>🇭🇰 香港 IEPL 01</span>
+                <span style="color: #10b981; font-weight: 600;">22ms · 529 Mbps</span>
+              </div>
+              <div style="background: var(--surface-2); height: 6px; border-radius: 3px; overflow: hidden;">
+                <div style="background: #10b981; width: 92%; height: 100%;"></div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>🇸🇬 新加坡 专线</span>
+                <span style="color: #38bdf8; font-weight: 600;">46ms · 387 Mbps</span>
+              </div>
+              <div style="background: var(--surface-2); height: 6px; border-radius: 3px; overflow: hidden;">
+                <div style="background: #38bdf8; width: 75%; height: 100%;"></div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>🇯🇵 日本 东京专线</span>
+                <span style="color: #38bdf8; font-weight: 600;">57ms · 135 Mbps</span>
+              </div>
+              <div style="background: var(--surface-2); height: 6px; border-radius: 3px; overflow: hidden;">
+                <div style="background: #38bdf8; width: 50%; height: 100%;"></div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; font-size: 0.8rem;" class="muted">
+              <span>流媒体: Netflix 4K / YouTube 解锁</span>
+              <span>AI: Claude / ChatGPT 支持</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 全网 42 家机场品牌精选与实测推荐（全部 42 家平铺展示） -->
+  <section class="section">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <p class="eyebrow">Full Airport Matrix</p>
+          <h2 style="margin: 0.25rem 0;">2026 全网 42 家机场品牌推荐与实测全景</h2>
+          <p class="muted" style="max-width: 70ch; margin: 0.5rem 0 0;">
+            根据专线稳定性、晚高峰吞吐、流媒体解锁能力与售后口碑综合评选。收录全网 42 家主流与备用机场，提供真实套餐、优惠码与官网直达入口。
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;" id="home-filter-tags">
+          <button class="home-filter-btn active" data-filter="all">全部 (42)</button>
+          <button class="home-filter-btn" data-filter="top10">前十首推 (10)</button>
+          <button class="home-filter-btn" data-filter="speedtest">含实测图 (17)</button>
+          <button class="home-filter-btn" data-filter="iepl">IEPL/IPLC 专线</button>
+          <button class="home-filter-btn" data-filter="budget">性价比 (&le;¥10/月)</button>
+        </div>
+      </div>
+
+      <!-- 42 家机场卡片网格 -->
+      <div id="home-cards-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.5rem;">
+        {
+          airports.map((item) => (
+            <div
+              class="home-airport-card"
+              data-top10={item.isTop10 ? 'true' : 'false'}
+              data-speedtest={item.hasSpeedtest ? 'true' : 'false'}
+              data-line={item.lineType.toLowerCase()}
+              data-price={item.minPrice}
+              style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.35rem; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, border-color 0.2s; box-shadow: var(--shadow-sm);"
+            >
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                  <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <span style="background: var(--surface-2); font-family: var(--font-mono); font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border); font-weight: 600;">
+                      排名第{item.rank}
+                    </span>
+                    {item.isFeatured && (
+                      <span style="background: #2563eb; color: #fff; font-size: 0.7rem; padding: 0.12rem 0.45rem; border-radius: var(--radius-sm); font-weight: 600;">
+                        首推
+                      </span>
+                    )}
+                    {item.hasSpeedtest && (
+                      <span style="color: #10b981; font-size: 0.7rem; background: rgba(16, 185, 129, 0.1); padding: 0.12rem 0.45rem; border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.3);">
+                        实测图
+                      </span>
+                    )}
+                  </div>
+                  <span style="font-family: var(--font-mono); color: var(--accent); font-weight: 700; font-size: 1rem;">
+                    {item.minPrice}
+                  </span>
+                </div>
+
+                <h3 style="margin: 0 0 0.5rem; font-size: 1.25rem;">
+                  <a href={withBase(`/airports/${item.id}/`)} style="text-decoration: none; color: inherit;">
+                    {item.name}
+                  </a>
+                </h3>
+
+                <p class="muted" style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; min-height: 48px;">
+                  {item.features[0] || item.summary}
+                </p>
+
+                <div style="font-size: 0.82rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.35rem; background: var(--surface-2); padding: 0.6rem 0.8rem; border-radius: var(--radius-sm); font-family: var(--font-mono);">
+                  <div><strong>线路：</strong>{item.lineType}</div>
+                  <div><strong>协议：</strong>{item.protocol}</div>
+                  <div>
+                    <strong>优惠码：</strong>
+                    {item.coupon ? (
+                      <span style="color: var(--accent); font-weight: 700;">{item.coupon}</span>
+                    ) : (
+                      <span class="muted">无门槛直购</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.6rem; align-items: center; margin-top: 0.5rem;">
+                <a class="btn btn-primary" href={item.affUrl} target="_blank" rel="nofollow sponsored noopener" style="flex: 1; text-align: center; font-size: 0.85rem; padding: 0.45rem 0.8rem; font-weight: 600;">
+                  官网开通
+                </a>
+                <a class="btn" href={withBase(`/airports/${item.id}/`)} style="font-size: 0.85rem; padding: 0.45rem 0.8rem; border: 1px solid var(--border);">
+                  详情
+                </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 客户端与测速实测快捷入口 -->
+  <section class="section" style="background: var(--surface-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem;">
+        <h3 style="margin: 0 0 0.5rem;">📱 全平台第三方代理客户端</h3>
+        <p class="muted" style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 1.25rem;">
+          收录 Windows、macOS、iOS（Shadowrocket/Surge/Stash）、Android（v2rayNG/FlClash）及软路由各平台客户端官方开源下载源与配置规则。
+        </p>
+        <a class="btn" href={withBase('/clients')} style="border: 1px solid var(--border); font-size: 0.88rem;">
+          前往客户端下载与指南 →
+        </a>
+      </div>
+
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem;">
+        <h3 style="margin: 0 0 0.5rem;">⚡ 节点测速大图与解锁画廊</h3>
+        <p class="muted" style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 1.25rem;">
+          提供 17 家主流专线机场晚高峰真实节点测速图与流媒体解锁截图，支持全屏灯箱缩放与细节比对，绝不作假。
+        </p>
+        <a class="btn" href={withBase('/speedtest')} style="border: 1px solid var(--border); font-size: 0.88rem;">
+          浏览测速大图中心 →
+        </a>
+      </div>
+    </div>
+  </section>
 </Layout>
+
+<style>
+  .home-filter-btn {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .home-filter-btn:hover {
+    border-color: var(--accent);
+  }
+  .home-filter-btn.active {
+    background: var(--accent);
+    color: var(--on-accent);
+    border-color: var(--accent);
+  }
+</style>
+
+<script>
+  const filterBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.home-filter-btn'));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.home-airport-card'));
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter || 'all';
+
+      cards.forEach((card) => {
+        const isTop10 = card.dataset.top10 === 'true';
+        const hasSpeedtest = card.dataset.speedtest === 'true';
+        const line = card.dataset.line || '';
+        const priceStr = card.dataset.price || '';
+
+        let show = true;
+        if (filter === 'top10') show = isTop10;
+        else if (filter === 'speedtest') show = hasSpeedtest;
+        else if (filter === 'iepl') show = line.includes('iepl') || line.includes('iplc');
+        else if (filter === 'budget') {
+          const num = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 999;
+          show = num <= 10;
+        }
+
+        card.style.display = show ? 'flex' : 'none';
+      });
+    });
+  });
+</script>
